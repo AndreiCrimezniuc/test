@@ -2,12 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\Author;
+use Illuminate\Routing\Controller;
 
-class AuthorController extends BaseAdminController
+class AuthorController extends Controller
 {
+    public function index()
+    {
+        $authors = Author::withCount('books')->latest()->paginate(10);
+        return view('admin.authors.index', compact('authors'));
+    }
+
+    public function create()
+    {
+        return view('admin.authors.create');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -23,15 +35,20 @@ class AuthorController extends BaseAdminController
 
         $validated['slug'] = Str::slug($validated['firstname'] . ' ' . $validated['lastname']);
         
-        $author = Author::create($validated);
-        return $this->successResponse($author, 'Author created successfully', 201);
+        Author::create($validated);
+        return redirect()->route('admin.authors.index')->with('success', 'Author created successfully');
+    }
+
+    public function edit(Author $author)
+    {
+        return view('admin.authors.edit', compact('author'));
     }
 
     public function update(Request $request, Author $author)
     {
         $validated = $request->validate([
-            'firstname' => 'sometimes|required|string|max:255',
-            'lastname' => 'sometimes|required|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
             'biography' => 'nullable|string',
             'image' => 'nullable|image|max:2048'
         ]);
@@ -40,23 +57,19 @@ class AuthorController extends BaseAdminController
             $validated['image'] = $request->file('image')->store('authors/images', 'public');
         }
 
-        if (isset($validated['firstname']) || isset($validated['lastname'])) {
-            $firstname = $validated['firstname'] ?? $author->firstname;
-            $lastname = $validated['lastname'] ?? $author->lastname;
-            $validated['slug'] = Str::slug($firstname . ' ' . $lastname);
-        }
+        $validated['slug'] = Str::slug($validated['firstname'] . ' ' . $validated['lastname']);
         
         $author->update($validated);
-        return $this->successResponse($author, 'Author updated successfully');
+        return redirect()->route('admin.authors.index')->with('success', 'Author updated successfully');
     }
 
     public function destroy(Author $author)
     {
         if ($author->books()->exists()) {
-            return $this->errorResponse('Cannot delete author with associated books', 422);
+            return back()->with('error', 'Cannot delete author with associated books');
         }
 
         $author->delete();
-        return $this->successResponse(null, 'Author deleted successfully');
+        return redirect()->route('admin.authors.index')->with('success', 'Author deleted successfully');
     }
 } 

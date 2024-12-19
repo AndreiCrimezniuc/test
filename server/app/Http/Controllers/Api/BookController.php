@@ -85,11 +85,10 @@ class BookController extends Controller
     }
 
     public function update(BookStoreRequest $request, $id) {
+        $book = $this->bookService->get($id, false, []);
         $data = $request->validated();
 
-        DB::transaction(function () use ($data, $id) {
-            $book = $this->bookService->get($id, false, []);
-
+        DB::transaction(function () use ($data, $book) {
             if (request()->hasFile('cover_image')) {
                 // Удаление старого изображения
                 if ($book->cover_image) {
@@ -150,5 +149,4 @@ class BookController extends Controller
 
         return response()->download($filePath);
     }
-
 }

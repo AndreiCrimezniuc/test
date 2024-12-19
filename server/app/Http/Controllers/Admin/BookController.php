@@ -2,16 +2,28 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\Book;
+use App\Models\Author;
+use App\Models\Genre;
+use Illuminate\Routing\Controller;
 
-class BookController extends BaseAdminController
+class BookController extends Controller
 {
     public function index()
     {
         $books = Book::with(['author', 'genre'])->latest()->paginate(10);
-        return $this->successResponse($books);
+        $authors = Author::all();
+        $genres = Genre::all();
+        return view('admin.books.index', compact('books', 'authors', 'genres'));
+    }
+
+    public function create()
+    {
+        $authors = Author::all();
+        $genres = Genre::all();
+        return view('admin.books.create', compact('authors', 'genres'));
     }
 
     public function store(Request $request)
@@ -35,17 +47,24 @@ class BookController extends BaseAdminController
             $validated['file_path'] = $request->file('file')->store('books/files', 'public');
         }
 
-        $book = Book::create($validated);
-        return $this->successResponse($book, 'Book created successfully', 201);
+        Book::create($validated);
+        return redirect()->route('admin.books.index')->with('success', 'Book created successfully');
+    }
+
+    public function edit(Book $book)
+    {
+        $authors = Author::all();
+        $genres = Genre::all();
+        return view('admin.books.edit', compact('book', 'authors', 'genres'));
     }
 
     public function update(Request $request, Book $book)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'author_id' => 'sometimes|required|exists:authors,id',
-            'genre_id' => 'sometimes|required|exists:genres,id',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'author_id' => 'required|exists:authors,id',
+            'genre_id' => 'required|exists:genres,id',
             'image' => 'nullable|image|max:2048',
             'file' => 'nullable|mimes:pdf,epub|max:10240'
         ]);
@@ -63,12 +82,12 @@ class BookController extends BaseAdminController
         }
 
         $book->update($validated);
-        return $this->successResponse($book, 'Book updated successfully');
+        return redirect()->route('admin.books.index')->with('success', 'Book updated successfully');
     }
 
     public function destroy(Book $book)
     {
         $book->delete();
-        return $this->successResponse(null, 'Book deleted successfully');
+        return redirect()->route('admin.books.index')->with('success', 'Book deleted successfully');
     }
 } 
