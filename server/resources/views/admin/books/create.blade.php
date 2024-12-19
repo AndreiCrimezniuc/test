@@ -99,6 +99,19 @@
                             @enderror
                         </div>
 
+                        <div class="mb-3">
+                            <label for="file_path" class="form-label">PDF файл книги</label>
+                            <input type="file" 
+                                   class="form-control @error('file_path') is-invalid @enderror" 
+                                   id="file_path" 
+                                   name="file_path"
+                                   accept=".pdf">
+                            <small class="text-muted">Максимальный размер файла: 10MB</small>
+                            @error('file_path')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <button type="submit" id="submitBtn" class="btn btn-primary">Сохранить</button>
                         <a href="{{ route('admin.books.index') }}" class="btn btn-secondary">Отмена</a>
                     </form>

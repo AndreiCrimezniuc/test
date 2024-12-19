@@ -1,152 +1,199 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\BookFileUpload;
-use App\Http\Requests\BookStoreRequest;
+use App\Http\Controllers\Api\Controller;
 use App\Models\Book;
-use App\Models\BookFile;
 use App\Services\BookService;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BookController extends Controller
 {
-    private $bookService;
+    protected $bookService;
 
-    public function __construct(BookService $bookService) {
+    public function __construct(BookService $bookService)
+    {
         $this->bookService = $bookService;
     }
 
-    public function index()
+    /**
+     * Получить список книг
+     */
+    public function index(Request $request): JsonResponse
     {
-        $books = Book::with(['author', 'genre'])
-            ->select(['id', 'title', 'description', 'published_year', 'cover_image', 'slug'])
-            ->paginate(12);
+        $filters = $request->only(['search', 'author_id', 'genre_id', 'sort']);
+        $books = $this->bookService->getPaginatedBooks($filters);
 
         return response()->json([
-            'data' => $books->items(),
-            'meta' => [
-                'current_page' => $books->currentPage(),
-                'last_page' => $books->lastPage(),
-                'per_page' => $books->perPage(),
-                'total' => $books->total()
-            ]
+            'success' => true,
+            'data' => $books
         ]);
     }
 
-    public function getBySlug($slug)
+    /**
+     * Получить последние добавленные книги
+     */
+    public function latest(): JsonResponse
     {
-        $book = Book::with(['author', 'genre', 'files'])
-            ->where('slug', $slug)
-            ->firstOrFail();
+        $books = $this->bookService->getLatestBooks();
 
         return response()->json([
+            'success' => true,
+            'data' => $books
+        ]);
+    }
+
+    /**
+     * Получить книги по жанру
+     */
+    public function byGenre(int $genreId): JsonResponse
+    {
+        $books = $this->bookService->getBooksByGenre($genreId);
+
+        return response()->json([
+            'success' => true,
+            'data' => $books
+        ]);
+    }
+
+    /**
+     * Получить книги по автору
+     */
+    public function byAuthor(int $authorId): JsonResponse
+    {
+        $books = $this->bookService->getBooksByAuthor($authorId);
+
+        return response()->json([
+            'success' => true,
+            'data' => $books
+        ]);
+    }
+
+    /**
+     * Получить детальную информацию о книге
+     */
+    public function show(int $id): JsonResponse
+    {
+        $book = $this->bookService->getBookById($id);
+
+        if (!$book) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Книга не найдена'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
             'data' => $book
         ]);
     }
 
-    public function store(BookStoreRequest $request) {
-        $data = $request->validated();
+    /**
+     * Создать новую книгу
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'author_id' => 'required|exists:authors,id',
+            'genre_id' => 'required|exists:genres,id',
+            'published_year' => 'required|integer|min:1800|max:' . date('Y'),
+            'cover_image' => 'nullable|image|max:2048',
+            'file_path' => 'nullable|mimes:pdf|max:10240'
+        ]);
 
-        DB::transaction(function () use ($data) {
-            // путь к изображению
-            $imagePath = null;
-            if (request()->hasFile('cover_image')) {
-                $image = $data['cover_image'];
-                $newName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('images/covers', $newName, 'public');
-            }
+        $book = $this->bookService->createBook($validated);
 
-            // создание книги
-            $book = $this->bookService->create([
-                'title' => $data['title'],
-                'author_id' => $data['author_id'],
-                'genre_id' => $data['genre_id'],
-                'description' => $data['description'] ?? null,
-                'published_year' => $data['published_year'],
-                'file_path' => $data['file_path'],
-                'cover_image' => $imagePath,
-            ]);
-
-            // Загрузка файлов
-            if (!empty($data['files'])) {
-                $uploadedFiles = BookFileUpload::uploadFiles($data['files']);
-                foreach ($uploadedFiles as $file) {
-                    BookFile::create([
-                        'filename' => $file,
-                        'book_id' => $book->id,
-                    ]);
-                }
-            }
-        });
-
-        return response()->json(['message' => 'Book created successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Книга успешно создана',
+            'data' => $book
+        ], 201);
     }
 
-    public function update(BookStoreRequest $request, $id) {
-        $book = $this->bookService->get($id, false, []);
-        $data = $request->validated();
+    /**
+     * Обновить существующую книгу
+     */
+    public function update(Request $request, Book $book): JsonResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'author_id' => 'required|exists:authors,id',
+            'genre_id' => 'required|exists:genres,id',
+            'published_year' => 'required|integer|min:1800|max:' . date('Y'),
+            'cover_image' => 'nullable|image|max:2048',
+            'file_path' => 'nullable|mimes:pdf|max:10240'
+        ]);
 
-        DB::transaction(function () use ($data, $book) {
-            if (request()->hasFile('cover_image')) {
-                // Удаление старого изображения
-                if ($book->cover_image) {
-                    Storage::disk('public')->delete($book->cover_image);
-                }
+        $book = $this->bookService->updateBook($book, $validated);
 
-                $image = $data['cover_image'];
-                $newName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('images/covers', $newName, 'public');
-                $data['cover_image'] = $imagePath;
-            }
-
-            $book->update($data);
-
-            if (!empty($data['files'])) {
-                $uploadedFiles = BookFileUpload::uploadFiles($data['files']);
-                foreach ($uploadedFiles as $file) {
-                    BookFile::create([
-                        'book_id' => $book->id,
-                        'file_path' => $file['path'],
-                        'file_type' => $file['type']
-                    ]);
-                }
-            }
-        });
-
-        return response()->json(['message' => 'Book updated successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Книга успешно обновлена',
+            'data' => $book
+        ]);
     }
 
-    public function destroy($id) {
-        $book = $this->bookService->get($id, false, []);
+    /**
+     * Удалить книгу
+     */
+    public function destroy(Book $book): JsonResponse
+    {
+        $this->bookService->deleteBook($book);
 
-        DB::transaction(function () use ($book) {
-            // Удаление файлов книги
-            foreach ($book->files as $file) {
-                Storage::disk('public')->delete($file->file_path);
-                $file->delete();
-            }
-
-            // Удаление обложки
-            if ($book->cover_image) {
-                Storage::disk('public')->delete($book->cover_image);
-            }
-
-            $book->delete();
-        });
-
-        return response()->json(['message' => 'Book deleted successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Книга успешно удалена'
+        ]);
     }
 
-    public function downloadFile($id) {
-        $bookFile = BookFile::findOrFail($id);
-        $filePath = storage_path('app/public/' . $bookFile->file_path);
-
-        if (!file_exists($filePath)) {
-            abort(404);
+    /**
+     * Скачать файл книги
+     */
+    public function downloadFile(Book $book): StreamedResponse|JsonResponse
+    {
+        if (!$book->file_path || !Storage::disk('public')->exists($book->file_path)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Файл не найден'
+            ], 404);
         }
 
-        return response()->download($filePath);
+        $path = storage_path('app/public/' . $book->file_path);
+        return response()->download($path, $book->title . '.pdf', [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment'
+        ]);
+    }
+
+    /**
+     * Получить информацию о файле книги
+     */
+    public function getFileInfo(Book $book): JsonResponse
+    {
+        if (!$book->file_path || !Storage::disk('public')->exists($book->file_path)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Файл не найден'
+            ], 404);
+        }
+
+        $path = storage_path('app/public/' . $book->file_path);
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'file_url' => $book->file_url,
+                'file_name' => $book->title . '.pdf',
+                'file_size' => filesize($path),
+                'mime_type' => mime_content_type($path)
+            ]
+        ]);
     }
 }

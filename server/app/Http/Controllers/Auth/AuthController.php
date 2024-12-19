@@ -84,15 +84,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'user' => $user,
-                'token' => $token
-            ]
-        ], 201);
+        return $this->respondWithToken($user, 'Регистрация успешна', 201);
     }
 
     public function apiLogin(Request $request)
@@ -104,20 +96,12 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            $token = $user->createToken('auth-token')->plainTextToken;
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'user' => $user,
-                    'token' => $token
-                ]
-            ]);
+            return $this->respondWithToken($user, 'Вход выполнен успешно');
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'The provided credentials are incorrect.'
+            'message' => 'Неверные учетные данные'
         ], 401);
     }
 
@@ -129,5 +113,22 @@ class AuthController extends Controller
                 'user' => $request->user()
             ]
         ]);
+    }
+
+    /**
+     * Создать ответ с токеном аутентификации
+     */
+    private function respondWithToken(User $user, string $message, int $status = 200): \Illuminate\Http\JsonResponse
+    {
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => [
+                'user' => $user,
+                'token' => $token
+            ]
+        ], $status);
     }
 }

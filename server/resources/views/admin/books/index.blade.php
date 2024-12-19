@@ -84,16 +84,18 @@
         <div class="card-body">
             <form id="booksForm" action="{{ route('admin.books.bulk-action') }}" method="POST">
                 @csrf
+                <input type="hidden" name="action" id="selectedAction">
+                <input type="hidden" name="genre_id" id="selectedGenreId">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1>Книги</h1>
                     <div>
-                        <select class="form-select d-inline-block w-auto me-2" name="action">
+                        <select class="form-select d-inline-block w-auto me-2" id="bulkAction">
                             <option value="">Выберите действие</option>
                             <option value="delete">Удалить выбранные</option>
                             <option value="change_genre">Изменить жанр</option>
                         </select>
-                        <button type="submit" class="btn btn-secondary" id="bulkActionBtn">
-                            Применить
+                        <button type="button" class="btn btn-secondary" id="bulkActionBtn" disabled>
+                            Выберите книги
                         </button>
                         <a href="{{ route('admin.books.create') }}" class="btn btn-primary">
                             Добавить книгу
@@ -113,6 +115,7 @@
                             <th>Автор</th>
                             <th>Жанр</th>
                             <th>Год</th>
+                            <th>PDF</th>
                             <th>Действия</th>
                         </tr>
                     </thead>
@@ -135,6 +138,13 @@
                                 <td>{{ $book->genre->name }}</td>
                                 <td>{{ $book->published_year }}</td>
                                 <td>
+                                    @if($book->file_path)
+                                        <a href="{{ asset('storage/' . $book->file_path) }}" target="_blank">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </a>
+                                    @endif
+                                </td>
+                                <td>
                                     <div class="btn-group">
                                         <a href="{{ route('admin.books.edit', $book) }}" 
                                            class="btn btn-sm btn-outline-primary">
@@ -142,9 +152,7 @@
                                         </a>
                                         <form action="{{ route('admin.books.destroy', $book) }}" 
                                               method="POST" 
-                                              class="delete-form"
-                                              data-bs-toggle="modal" 
-                                              data-bs-target="#confirmModal">
+                                              class="delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" 
@@ -184,7 +192,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn btn-primary" onclick="submitBulkAction()">Применить</button>
+                    <button type="button" class="btn btn-primary" id="confirmGenreChange">Применить</button>
                 </div>
             </div>
         </div>
@@ -230,127 +238,5 @@
 @endsection
 
 @section('scripts')
-<script>
-document.getElementById('selectAll').addEventListener('change', function() {
-    const checkboxes = document.querySelectorAll('input[name="selected[]"]');
-    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-});
-
-// Автоматическая отправка формы при изменении фильтров
-document.querySelectorAll('#filterForm select').forEach(select => {
-    select.addEventListener('change', () => document.getElementById('filterForm').submit());
-});
-
-function deleteBook(id) {
-    if (confirm('Вы уверены, что хотите удалить эту книгу?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/admin/books/${id}`;
-        form.innerHTML = `
-            @csrf
-            @method('DELETE')
-        `;
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-
-// Обработка массовых действий
-document.getElementById('bulkActionBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    const action = document.querySelector('select[name="action"]').value;
-    const selected = document.querySelectorAll('input[name="selected[]"]:checked');
-    
-    if (selected.length === 0) {
-        alert('Выберите хотя бы одну книгу');
-        return;
-    }
-    
-    switch (action) {
-        case 'delete':
-            const bulkDeleteModal = new bootstrap.Modal(document.getElementById('bulkDeleteModal'));
-            bulkDeleteModal.show();
-            break;
-            
-        case 'change_genre':
-            const genreModal = new bootstrap.Modal(document.getElementById('changeGenreModal'));
-            genreModal.show();
-            break;
-            
-        default:
-            alert('Выберите действие');
-    }
-});
-
-// Подтверждение массового удаления
-document.getElementById('confirmBulkDelete').addEventListener('click', function() {
-    const form = document.getElementById('booksForm');
-    const actionInput = document.createElement('input');
-    actionInput.type = 'hidden';
-    actionInput.name = 'action';
-    actionInput.value = 'delete';
-    form.appendChild(actionInput);
-    form.submit();
-});
-
-// Подтверждение изменения жанра
-function submitBulkAction() {
-    const form = document.getElementById('booksForm');
-    const genreId = document.getElementById('bulk_genre_id').value;
-    const actionInput = document.createElement('input');
-    const genreInput = document.createElement('input');
-    
-    actionInput.type = 'hidden';
-    actionInput.name = 'action';
-    actionInput.value = 'change_genre';
-    
-    genreInput.type = 'hidden';
-    genreInput.name = 'genre_id';
-    genreInput.value = genreId;
-    
-    form.appendChild(actionInput);
-    form.appendChild(genreInput);
-    form.submit();
-}
-
-// Проверка выбранных элементов
-document.querySelectorAll('input[name="selected[]"]').forEach(checkbox => {
-    checkbox.addEventListener('change', updateBulkActionButton);
-});
-
-function updateBulkActionButton() {
-    const selected = document.querySelectorAll('input[name="selected[]"]:checked').length;
-    const btn = document.getElementById('bulkActionBtn');
-    btn.disabled = selected === 0;
-    btn.textContent = `Применить (${selected})`;
-}
-
-// Обработчик для кнопки "Выбрать все"
-document.getElementById('selectAll').addEventListener('change', function() {
-    const checkboxes = document.querySelectorAll('input[name="selected[]"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = this.checked;
-    });
-    updateBulkActionButton();
-});
-
-let formToSubmit = null;
-
-// Перехватываем отправку формы удаления
-document.querySelectorAll('.delete-form').forEach(form => {
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        formToSubmit = this;
-    });
-});
-
-// Обработчик подтверждения удаления
-document.getElementById('confirmDelete').addEventListener('click', function() {
-    if (formToSubmit) {
-        formToSubmit.submit();
-    }
-    var modal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
-    modal.hide();
-});
-</script>
+    <script src="{{ asset('js/admin/books.js') }}"></script>
 @endsection 

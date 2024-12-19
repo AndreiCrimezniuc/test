@@ -31,6 +31,7 @@
         <form action="{{ route('admin.books.update', $book) }}" method="POST" enctype="multipart/form-data" id="editForm" class="needs-validation" novalidate>
             @csrf
             @method('PUT')
+            <input type="hidden" id="bookId" value="{{ $book->id }}">
             
             <div class="form-group mb-3">
                 <label>Название</label>
@@ -54,77 +55,83 @@
                 @enderror
             </div>
             
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>Жанр</label>
-                <select name="genre_id" class="form-control">
+                <select name="genre_id" class="form-control @error('genre_id') is-invalid @enderror" required>
                     @foreach($genres as $genre)
                         <option value="{{ $genre->id }}" {{ $book->genre_id == $genre->id ? 'selected' : '' }}>
                             {{ $genre->name }}
                         </option>
                     @endforeach
                 </select>
+                @error('genre_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
             
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>Описание</label>
-                <textarea name="description" class="form-control">{{ old('description', $book->description) }}</textarea>
+                <textarea name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description', $book->description) }}</textarea>
+                @error('description')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
             
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>Год издания</label>
-                <input type="number" name="published_year" value="{{ old('published_year', $book->published_year) }}" class="form-control">
+                <input type="number" name="published_year" value="{{ old('published_year', $book->published_year) }}" class="form-control @error('published_year') is-invalid @enderror" required>
+                @error('published_year')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
             
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>Обложка</label>
+                <input type="file" name="cover_image" class="form-control @error('cover_image') is-invalid @enderror">
+                @error('cover_image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
                 @if($book->cover_image)
-                    <img src="{{ asset('storage/' . $book->cover_image) }}" width="100">
+                    <div class="mt-2">
+                        <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Текущая обложка" style="max-height: 200px;">
+                    </div>
                 @endif
-                <input type="file" name="cover_image" class="form-control">
             </div>
             
-            <div class="form-group mb-4">
-                <label>Файлы книги</label>
-                @if($book->files->count() > 0)
-                    <div class="list-group mb-3">
-                        @foreach($book->files as $file)
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>{{ $file->original_name }}</span>
-                                <div>
-                                    <a href="{{ asset('storage/' . $file->file_path) }}" 
-                                       class="btn btn-sm btn-info" 
-                                       target="_blank">
-                                        Скачать
-                                    </a>
-                                    <form action="{{ route('admin.books.files.destroy', $file) }}" 
-                                          method="POST" 
-                                          class="delete-file-form" 
-                                          data-bs-toggle="modal" 
-                                          data-bs-target="#confirmModal">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                                class="btn btn-sm btn-danger">
-                                            Удалить
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        @endforeach
+            <div class="form-group mb-3">
+                <label>PDF файл книги</label>
+                <input type="file" name="file_path" class="form-control @error('file_path') is-invalid @enderror" accept=".pdf">
+                <small class="text-muted">Максимальный размер файла: 10MB</small>
+                @error('file_path')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                @if($book->file_path)
+                    <div class="mt-2">
+                        <p>Текущий файл: {{ basename($book->file_path) }}</p>
+                        <div class="btn-group">
+                            <a href="{{ asset('storage/' . $book->file_path) }}" 
+                               class="btn btn-sm btn-info" 
+                               target="_blank">
+                                Скачать
+                            </a>
+                            <button type="button" 
+                                    class="btn btn-sm btn-danger" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmModal">
+                                Удалить файл
+                            </button>
+                        </div>
                     </div>
-                @else
-                    <p class="text-muted">Нет загруженных файлов</p>
                 @endif
-                
-                <div class="mt-3">
-                    <label>Добавить новые файлы</label>
-                    <input type="file" name="new_files[]" multiple class="form-control">
-                    <small class="text-muted">Поддерживаемые форматы: PDF, EPUB, MOBI, FB2, TXT. Максимальный размер каждого файла: 10MB</small>
-                </div>
             </div>
             
             <button type="submit" id="submitBtn" class="btn btn-primary">Сохранить</button>
+            <a href="{{ route('admin.books.index') }}" class="btn btn-secondary">Назад</a>
         </form>
     </div>
 </div>
-@endsection 
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('js/admin/book-edit.js') }}"></script>
+@endsection

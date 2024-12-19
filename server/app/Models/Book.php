@@ -10,11 +10,16 @@ class Book extends Model
     protected $fillable = [
         'title',
         'description',
-        'image',
-        'file_path',
         'author_id',
         'genre_id',
+        'published_year',
+        'cover_image',
+        'file_path',
         'slug'
+    ];
+
+    protected $casts = [
+        'published_year' => 'integer',
     ];
 
     public function author(): BelongsTo
@@ -25,5 +30,15 @@ class Book extends Model
     public function genre(): BelongsTo
     {
         return $this->belongsTo(Genre::class);
+    }
+
+    public function getCoverImageUrlAttribute(): ?string
+    {
+        return $this->cover_image ? asset('storage/' . $this->cover_image) : null;
+    }
+
+    public function getFileUrlAttribute(): ?string
+    {
+        return $this->file_path ? asset('storage/' . $this->file_path) : null;
     }
 }

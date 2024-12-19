@@ -35,9 +35,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Маршруты для книг
     Route::resource('books', BookController::class);
     Route::post('books/bulk-action', [BookController::class, 'bulkAction'])->name('books.bulk-action');
-    Route::get('books/{book}/upload-files', [BookController::class, 'uploadFilesForm'])->name('books.upload-files.form');
-    Route::post('books/{book}/upload-files', [BookController::class, 'uploadFiles'])->name('books.upload-files');
-    Route::delete('books/files/{file}', [BookController::class, 'destroyFile'])->name('books.files.destroy');
+    Route::post('books/{book}/remove-file', [BookController::class, 'removeFile'])->name('books.remove-file');
 
     // Маршруты для авторов и жанров
     Route::resource('authors', AuthorController::class);

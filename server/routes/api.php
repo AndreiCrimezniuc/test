@@ -18,6 +18,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/books/genre/{slug}', [BookController::class, 'byGenre']);
     Route::get('/books/author/{slug}', [BookController::class, 'byAuthor']);
     Route::get('/books/{slug}', [BookController::class, 'show']);
+    Route::get('/books/{book}/download', [BookController::class, 'downloadFile'])->name('books.download');
+    Route::get('/books/{book}/file-info', [BookController::class, 'getFileInfo'])->name('books.file-info');
     Route::get('/authors', [AuthorController::class, 'index']);
     Route::get('/authors/{slug}', [AuthorController::class, 'show']);
     Route::get('/genres', [GenreController::class, 'index']);
