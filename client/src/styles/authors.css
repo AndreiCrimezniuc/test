@@ -1,0 +1,147 @@
+/* Контейнер для авторов */
+.authors-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) 0;
+}
+
+/* Карточка автора */
+.author-card {
+  background: var(--background-primary);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+body.dark-mode .author-card {
+  background: var(--background-secondary-dark);
+}
+
+.author-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .author-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Фото автора */
+.author-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Информация об авторе */
+.author-info {
+  padding: var(--spacing-md);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+body.dark-mode .author-name {
+  color: var(--text-primary-dark);
+}
+
+.author-bio {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.dark-mode .author-bio {
+  color: var(--text-secondary-dark);
+}
+
+/* Статистика автора */
+.author-stats {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: auto;
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--background-secondary);
+}
+
+body.dark-mode .author-stats {
+  border-color: var(--background-secondary-dark);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Фильтры */
+.authors-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--text-secondary);
+  border-radius: 4px;
+  background: var(--background-primary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  min-width: 200px;
+}
+
+body.dark-mode .filter-input {
+  background: var(--background-secondary-dark);
+  color: var(--text-primary-dark);
+  border-color: var(--text-secondary-dark);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .authors-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .author-name {
+    font-size: 1.1rem;
+  }
+
+  .author-bio {
+    font-size: 0.85rem;
+  }
+
+  .authors-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

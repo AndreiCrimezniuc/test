@@ -1,0 +1,61 @@
+.book-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 20px;
+}
+
+.back-link {
+    display: inline-block;
+    color: var(--link-color);
+    text-decoration: none;
+    margin-bottom: 2rem;
+}
+
+.back-link:hover {
+    color: var(--blue);
+}
+
+.book-details {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+}
+
+.book-cover {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.book-cover img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.book-info h1 {
+    margin: 0 0 1rem;
+    color: var(--link-hover-color);
+}
+
+.book-info p {
+    margin: 0.5rem 0;
+    color: var(--link-color);
+}
+
+.description {
+    margin-top: 1.5rem !important;
+    line-height: 1.6;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .book-details {
+        grid-template-columns: 1fr;
+    }
+
+    .book-cover {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}

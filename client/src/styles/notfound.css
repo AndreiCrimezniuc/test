@@ -1,0 +1,181 @@
+:root {
+  --maincolor: #fff;
+  --secondarycolor: #0e1118;
+}
+
+.o-404 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--secondarycolor);
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 5rem 0;
+  padding: 2rem;
+}
+
+.a-title {
+  font-size: 10rem;
+  text-align: center;
+  margin: 2rem 0 0 0;
+  color: var(--maincolor);
+}
+
+.a-message {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--maincolor);
+}
+
+.o-cat {
+  width: 40vh;
+  position: relative;
+}
+
+.m-ears {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: -8vh;
+  width: 100%;
+}
+
+.m-ear {
+  background-color: var(--maincolor);
+  height: 14vh;
+  width: 10vh;
+  border-radius: 40% 70% 10% 10%;
+  position: relative;
+}
+
+.m-ear.-left {
+  transform: rotateZ(15deg);
+}
+
+.m-ear.-right {
+  transform: rotateY(180deg) rotateZ(15deg);
+}
+
+.m-ear:after,
+.m-ear:before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  background-color: var(--secondarycolor);
+  bottom: 0;
+  right: 70%;
+  border-radius: 50%;
+}
+
+.m-ear:after {
+  height: 40%;
+  transform: rotate(15deg);
+}
+
+.m-ear:before {
+  height: 35%;
+  transform: rotate(-15deg);
+}
+
+.m-face {
+  background-color: var(--secondarycolor);
+  border-radius: 100% 100% 0 0;
+  width: 100%;
+  padding: 10vh 0 6vh;
+  position: relative;
+  z-index: 1;
+}
+
+.m-eyes {
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+  top: -2vh;
+}
+
+.m-eye {
+  background-color: var(--maincolor);
+  width: 10vh;
+  height: 8vh;
+  border-radius: 70%;
+  position: relative;
+}
+
+.m-eye:before {
+  content: "";
+  position: absolute;
+  height: 50%;
+  left: -2vh;
+  right: -2vh;
+  background-color: var(--secondarycolor);
+  border-radius: 0 0 35% 35%;
+  z-index: 2;
+  animation: eyes 3s ease infinite;
+}
+
+.m-eye:after {
+  content: "";
+  width: 10%;
+  height: 15%;
+  border-radius: 50%;
+  background-color: var(--maincolor);
+  position: absolute;
+  top: 40%;
+}
+
+.m-eye.-left:after {
+  right: -5%;
+}
+
+.m-eye.-right:after {
+  left: -5%;
+}
+
+.a-eyePupil {
+  background-color: var(--secondarycolor);
+  width: 30%;
+  height: 50%;
+  border-radius: 50%;
+  position: absolute;
+  top: 25%;
+  left: 35%;
+}
+
+.a-eyePupil:after {
+  content: "";
+  background-color: var(--maincolor);
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+}
+
+.m-nose {
+  border-radius: 50%;
+  background-color: var(--maincolor);
+  width: 4vh;
+  height: 2vh;
+  margin: auto;
+  position: relative;
+  top: -1vh;
+}
+
+@keyframes eyes {
+  0%, 5%, 100% {
+    height: 50%;
+  }
+  2% {
+    height: 110%;
+  }
+}

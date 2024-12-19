@@ -1,0 +1,109 @@
+.box-collections {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box-collections .slider-title {
+  font-size: 20px;
+  color: black;
+  margin-bottom: 13px;
+  padding: 0 40px;
+  text-align: center;
+  width: 100%;
+  font-weight: 700;
+}
+
+body.dark-mode .box-collections .slider-title {
+  color: rgb(190, 190, 190);
+}
+
+.articles-box {
+  display: flex;
+  flex-direction: row;
+  align-items: space-between;
+  gap: 30px;
+}
+
+.collection-card {
+  --transition-duration: 700ms;
+  color: white;
+  position: relative;
+  border-radius: 0.6em;
+  overflow: hidden;
+  font-size: 14px;
+  height: 200px;
+  aspect-ratio: 16/9;
+  box-shadow: var(--shadow-lg), var(--shadow-lg), var(--shadow-lg);
+  transition: transform var(--transition-duration);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at 80% -150%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.5)
+    );
+    transition: box-shadow var(--transition-duration);
+    mix-blend-mode: overlay;
+  }
+}
+
+.collection-card img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: filter 0.3s ease;
+}
+
+.collection-card .content {
+  z-index: 1;
+  position: absolute;
+  bottom: 3px;
+  left: 25px;
+  right: 20px;
+  text-align: left;
+  transition: transform var(--transition-duration) var(--ease-in-out);
+
+  > * {
+    position: relative;
+    will-change: transform;
+  }
+}
+
+.collection-card h1 {
+  font-size: 18px;
+  color: inherit;
+  margin: 0;
+}
+
+.collection-card .synopsis {
+  font-size: 10px;
+  line-height: 1.4;
+  margin-block: 10px 20px;
+  transition-delay: 0.2s;
+  transition-property: opacity, transform;
+  transition-duration: 0.2s;
+}
+
+.collection-card:hover img {
+  filter: blur(1.7px) brightness(1);
+}
+
+.collection-card :not(:hover) {
+  .synopsis {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  .content {
+    transform: translateY(100%);
+  }
+}

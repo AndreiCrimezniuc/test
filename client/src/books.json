@@ -1,0 +1,207 @@
+[
+    {
+        "id": 1,
+        "title": "Маленькая жизнь",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Ханья Янагихара",
+        "genre": "Роман",
+        "published_year": 2015,
+        "cover_image": "littleLife",
+        "slug": "little-life"
+    }, 
+    {
+        "id": 2,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    },
+    {
+        "id": 3,
+        "title": "Железный колокол",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Сельма Лагерлёф",
+        "genre": "Роман",
+        "published_year": 1906,
+        "cover_image": "bellJar",
+        "slug": "the-bell-jar"
+    },
+    {
+        "id": 4,
+        "title": "Под стеклаянным колпаком",
+        "description": "Описание книги 4",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "under-the-glass-cap"
+    },
+    {
+        "id": 5,
+        "title": "Книга 5",
+        "description": "Описание книги 5",
+        "author": "Автор",
+        "genre": "Жанр",
+        "published_year": 2024,
+        "cover_image": "prozac",
+        "slug": "book-5"
+    }, 
+    {
+        "id": 6,
+        "title": "Книга 6",
+        "description": "Описание книги 6",
+        "author": "Автор",
+        "genre": "Жанр",
+        "published_year": 2024,
+        "cover_image": "bellJar",
+        "slug": "book-6"
+    },
+    {
+        "id": 7,
+        "title": "Книга 7",
+        "description": "Описание книги 7",
+        "author": "Автор",
+        "genre": "Поэзия",
+        "published_year": 2024,
+        "cover_image": "prozac",
+        "slug": "book-7"
+    },
+    {
+        "id": 8,
+        "title": "Книга 8",
+        "description": "Описание книги 8",
+        "author": "Автор",
+        "genre": "Роман",
+        "published_year": 2024,
+        "cover_image": "prozac",
+        "slug": "book-8"
+    }, 
+    {
+        "id": 9,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    }, 
+    {
+        "id": 10,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    }, 
+    {
+        "id": 11,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    }, 
+    {
+        "id": 12,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    }, 
+    {
+        "id": 13,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    }, 
+    {
+        "id": 14,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    }, 
+    {
+        "id": 15,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    },
+    {
+        "id": 16,
+        "title": "Железный колокол",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Сельма Лагерлёф",
+        "genre": "Роман",
+        "published_year": 1906,
+        "cover_image": "bellJar",
+        "slug": "the-bell-jar"
+    },{
+        "id": 15,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    },{
+        "id": 15,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    },{
+        "id": 15,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    },{
+        "id": 15,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    },{
+        "id": 15,
+        "title": "Нация прозака",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam in odio eius ipsa. Vel, natus sint? Voluptas harum hic vero distinctio est laboriosam odit repellendus voluptatibus obcaecati corporis impedit minus quod modi dicta quibusdam, nemo libero provident deserunt in nobis explicabo suscipit officia ut laudantium! Quos soluta adipisci repellendus nisi.",
+        "author": "Элизабет Вурцель",
+        "genre": "Роман",
+        "published_year": 1994,
+        "cover_image": "prozac",
+        "slug": "prozac-nation"
+    }
+]
