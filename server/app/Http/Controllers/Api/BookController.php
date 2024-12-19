@@ -1,14 +1,14 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Helpers\BookFileUpload;
+use App\Http\Requests\BookStoreRequest;
+use App\Models\Book;
 use App\Models\BookFile;
 use App\Services\BookService;
-use App\Helpers\BookFileUpload;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use App\Http\Requests\BookStoreRequest;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Book;
+use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
@@ -23,7 +23,7 @@ class BookController extends Controller
         $books = Book::with(['author', 'genre'])
             ->select(['id', 'title', 'description', 'published_year', 'cover_image', 'slug'])
             ->paginate(12);
-        
+
         return response()->json([
             'data' => $books->items(),
             'meta' => [
@@ -40,7 +40,7 @@ class BookController extends Controller
         $book = Book::with(['author', 'genre', 'files'])
             ->where('slug', $slug)
             ->firstOrFail();
-        
+
         return response()->json([
             'data' => $book
         ]);
@@ -86,16 +86,16 @@ class BookController extends Controller
 
     public function update(BookStoreRequest $request, $id) {
         $data = $request->validated();
-        
+
         DB::transaction(function () use ($data, $id) {
             $book = $this->bookService->get($id, false, []);
-            
+
             if (request()->hasFile('cover_image')) {
                 // Удаление старого изображения
                 if ($book->cover_image) {
                     Storage::disk('public')->delete($book->cover_image);
                 }
-                
+
                 $image = $data['cover_image'];
                 $newName = Str::uuid() . '.' . $image->getClientOriginalExtension();
                 $imagePath = $image->storeAs('images/covers', $newName, 'public');
@@ -121,19 +121,19 @@ class BookController extends Controller
 
     public function destroy($id) {
         $book = $this->bookService->get($id, false, []);
-        
+
         DB::transaction(function () use ($book) {
             // Удаление файлов книги
             foreach ($book->files as $file) {
                 Storage::disk('public')->delete($file->file_path);
                 $file->delete();
             }
-            
+
             // Удаление обложки
             if ($book->cover_image) {
                 Storage::disk('public')->delete($book->cover_image);
             }
-            
+
             $book->delete();
         });
 
@@ -143,11 +143,11 @@ class BookController extends Controller
     public function downloadFile($id) {
         $bookFile = BookFile::findOrFail($id);
         $filePath = storage_path('app/public/' . $bookFile->file_path);
-        
+
         if (!file_exists($filePath)) {
             abort(404);
         }
-        
+
         return response()->download($filePath);
     }
 

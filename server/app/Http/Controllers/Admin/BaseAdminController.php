@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Controller;
 
 class BaseAdminController extends Controller
 {
@@ -22,4 +22,4 @@ class BaseAdminController extends Controller
             'message' => $message
         ], $status);
     }
-} 
+}

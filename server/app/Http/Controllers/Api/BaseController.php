@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-
 class BaseController extends Controller
 {
     protected function successResponse($data, $message = null, $code = 200)
@@ -22,4 +20,4 @@ class BaseController extends Controller
             'message' => $message,
         ], $code);
     }
-} 
+}

@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Providers\RouteServiceProvider;
 
-class AuthController extends Controller
+class ApiAuthController extends Controller
 {
     public function showLoginForm()
     {
@@ -30,7 +28,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             return response()->json([
                 'user' => auth()->user(),
                 'redirect' => auth()->user()->isAdmin() ? '/admin' : '/',
@@ -77,4 +75,4 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('login');
     }
-} 
+}

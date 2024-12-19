@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\ApiAuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\AuthorController;
@@ -19,20 +19,20 @@ Route::get('/', function () {
 
 // Маршруты аутентификации
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+    Route::get('/login', [ApiAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [ApiAuthController::class, 'login'])->name('login.post');
+    Route::get('/register', [ApiAuthController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [ApiAuthController::class, 'register'])->name('register.post');
 });
 
-Route::post('/logout', [AuthController::class, 'logout'])
+Route::post('/logout', [ApiAuthController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
 
 // Админ панель и управление контентом
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // Управление пользователями (только для супер-админа)
     Route::middleware(['super.admin'])->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -46,7 +46,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('books/{book}/upload-files', [BookController::class, 'uploadFilesForm'])->name('books.upload-files.form');
     Route::post('books/{book}/upload-files', [BookController::class, 'uploadFiles'])->name('books.upload-files');
     Route::delete('books/files/{file}', [BookController::class, 'destroyFile'])->name('books.files.destroy');
-    
+
     // Аналогичные маршруты для авторов и жанров
     Route::resource('authors', AuthorController::class);
     Route::resource('genres', GenreController::class);

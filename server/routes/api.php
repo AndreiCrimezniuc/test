@@ -6,8 +6,8 @@ use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\AuthorController as AdminAuthorController;
 use App\Http\Controllers\Admin\GenreController as AdminGenreController;
 use App\Http\Controllers\Api\BookController;
-use App\Http\Controllers\Api\AuthorController;
-use App\Http\Controllers\Api\GenreController;
+use App\Http\Controllers\Admin\AuthorController;
+use App\Http\Controllers\Admin\GenreController;
 
 // Публичные роуты API
 Route::prefix('v1')->group(function () {
@@ -38,10 +38,10 @@ Route::middleware('api')->group(function () {
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     // Книги
     Route::apiResource('books', AdminBookController::class)->except(['index']);
-    
+
     // Авторы
     Route::apiResource('authors', AdminAuthorController::class)->except(['index']);
-    
+
     // Жанры
     Route::apiResource('genres', AdminGenreController::class)->except(['index']);
 });

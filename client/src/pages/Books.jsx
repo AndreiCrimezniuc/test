@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../styles/books.css';
@@ -6,8 +6,8 @@ import { Component as Sidebar } from '../components/Sidebar';
 import { useFavorites } from '../hooks/useFavorites';
 import { images } from '../utils/images';
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import books from '../books.json';
 import Pagination from '../components/Pagination';
+import { fetchBooks } from '../services/books.js';
 
 export default function Books() {
     const [selectedGenres, setSelectedGenres] = useState([]);
@@ -15,8 +15,19 @@ export default function Books() {
     const [sortType, setSortType] = useState('newest');
     const [currentPage, setCurrentPage] = useState(1);
     const { toggleFavorite, isFavorite } = useFavorites();
+    const [books, setBooks] = useState([]);
 
     const ITEMS_PER_PAGE = 16;
+
+    useEffect(() => {
+        // Fetch books data on mount
+        const fetchData = async () => {
+            const data = await fetchBooks();
+            setBooks(data);
+        };
+
+        fetchData();
+    }, []);
 
     // Фильтрация книг
     const filteredBooks = books.filter(book => {
