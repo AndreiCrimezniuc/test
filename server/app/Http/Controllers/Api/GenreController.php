@@ -32,6 +32,8 @@ class GenreController extends ApiController
             $query->orderBy('name');
         }
 
+        $query->with('books');
+
         $genres = $query->paginate(15);
         return $this->paginatedResponse($genres);
     }
@@ -41,4 +43,4 @@ class GenreController extends ApiController
         $genre->load('books');
         return $this->successResponse($genre);
     }
-} 
+}

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useApi } from '../hooks/useApi';
 import { useFavorites } from '../hooks/useFavorites';
+import {api} from '../services/api';
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
-import Sidebar from '../components/Side';
+import Sidebar from '../components/Sidebar.jsx';
 import '../styles/books.css';
 
 const Books = () => {
@@ -16,13 +16,12 @@ const Books = () => {
     const [selectedAuthors, setSelectedAuthors] = useState([]);
     const [sortBy, setSortBy] = useState('title');
     const [sortOrder, setSortOrder] = useState('asc');
-    const { get } = useApi();
     const { favorites, toggleFavorite } = useFavorites();
 
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const response = await get('/books');
+                const response = await api.getBooks();
                 setBooks(response.data);
                 setLoading(false);
             } catch (error) {
@@ -33,16 +32,7 @@ const Books = () => {
         };
 
         fetchBooks();
-    }, [get]);
-
-    const handleSort = (field) => {
-        if (sortBy === field) {
-            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortBy(field);
-            setSortOrder('asc');
-        }
-    };
+    }, []);
 
     const filterBooks = (booksToFilter) => {
         return booksToFilter.filter(book => {
@@ -50,10 +40,10 @@ const Books = () => {
                 book.author?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 book.genre?.name?.toLowerCase().includes(searchQuery.toLowerCase());
 
-            const matchesGenres = selectedGenres.length === 0 || 
+            const matchesGenres = selectedGenres.length === 0 ||
                 (book.genre && selectedGenres.includes(book.genre.id));
 
-            const matchesAuthors = selectedAuthors.length === 0 || 
+            const matchesAuthors = selectedAuthors.length === 0 ||
                 (book.author && selectedAuthors.includes(book.author.id));
 
             return matchesSearch && matchesGenres && matchesAuthors;
@@ -124,7 +114,7 @@ const Books = () => {
 
                 <div className="main-content">
                     <h1>Книги</h1>
-                    
+
                     <div className="books-controls">
                         <div className="search-container">
                             <input
@@ -142,9 +132,9 @@ const Books = () => {
                         {sortedBooks.map(book => (
                             <Link to={`/books/${book.id}`} key={book.id} className="book-card">
                                 <div className="book-cover">
-                                    <img 
-                                        src={book.file_path || '/placeholder-book.png'} 
-                                        alt={book.title} 
+                                    <img
+                                        src={book.file_path || '/placeholder-book.png'}
+                                        alt={book.title}
                                     />
                                     <button
                                         className={`favorite-btn ${favorites.includes(book.id) ? 'active' : ''}`}

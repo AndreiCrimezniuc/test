@@ -6,7 +6,7 @@ import '../styles/sidebar.css';
 import { FaArrowDownShortWide } from "react-icons/fa6";
 import { FaSortAmountUp } from "react-icons/fa";
 
-export function Component({ 
+export default function Component({
     selectedGenres, 
     setSelectedGenres, 
     selectedAuthors, 

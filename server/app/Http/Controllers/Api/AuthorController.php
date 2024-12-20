@@ -35,6 +35,8 @@ class AuthorController extends ApiController
             $query->orderBy('firstname')->orderBy('lastname');
         }
 
+        $query->with('books');
+
         $authors = $query->paginate(15);
         return $this->paginatedResponse($authors);
     }
@@ -44,4 +46,4 @@ class AuthorController extends ApiController
         $author->load('books');
         return $this->successResponse($author);
     }
-} 
+}

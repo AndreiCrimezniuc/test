@@ -1,27 +1,26 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart, FaRegHeart} from 'react-icons/fa';
-import { useApi } from '../hooks/useApi';
+import {api} from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
-import '../styles/genres.css';
+import '../styles/Genres.css';
 
 const Genres = () => {
     const [genres, setGenres] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const { get } = useApi();
     const { favorites, toggleFavorite } = useFavorites();
 
     useEffect(() => {
         const fetchGenres = async () => {
             try {
-                const response = await get('/genres');
+                const response = await api.getGenres('/genres');
                 setGenres(response.data);
             } catch (error) {
                 console.error('Error fetching genres:', error);
             }
         };
         fetchGenres();
-    }, [get]);
+    }, []);
 
     const filteredGenres = genres.filter(genre =>
         genre.name.toLowerCase().includes(searchQuery.toLowerCase())

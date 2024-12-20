@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaHeart } from 'react-icons/fa';
 import { useFavorites } from '../hooks/useFavorites';
 import { useApi } from '../hooks/useApi';
-import '../styles/Favorites.css';
+import '../styles/favorites.css';
 
 const Favorites = () => {
     const { favorites, toggleFavorite } = useFavorites();

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import Home from './pages/Home';
+import {Home} from './pages/Home';
 import Books from './pages/Books';
 import Book from './pages/Book';
 import Authors from './pages/Authors';
 import Genres from './pages/Genres';
 import Favorites from './pages/Favorites';
 import Footer from './components/Footer';
-import { FavoritesProvider } from './context/FavoritesContext';
+import  FavoritesProvider  from './context/FavoritesContext';
 import './styles/App.css';
 
 function App() {

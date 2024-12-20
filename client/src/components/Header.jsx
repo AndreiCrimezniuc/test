@@ -4,7 +4,7 @@ import { MdFavorite } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { FiSun, FiMoon } from "react-icons/fi";
 import { useFavorites } from '../hooks/useFavorites';
-import '../styles/Header.css';
+import '../styles/header.css';
 import PropTypes from 'prop-types';
 
 export default function Header({ isDarkMode, toggleTheme }) {

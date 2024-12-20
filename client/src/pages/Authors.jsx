@@ -1,27 +1,33 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { useApi } from '../hooks/useApi';
+import {api} from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
 import '../styles/authors.css';
 
 export default function Authors() {
     const [authors, setAuthors] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const { get } = useApi();
     const { favorites, toggleFavorite } = useFavorites();
 
     useEffect(() => {
         const fetchAuthors = async () => {
             try {
-                const response = await get('/authors');
-                setAuthors(response.data);
+                const response = await api.getAuthors('/authors');
+                const transformedAuthors = response.data.map(author => ({
+                    ...author,
+                    name: `${author.firstname} ${author.lastname}`.trim(),
+                }));
+                console.log(response);
+                setAuthors(transformedAuthors);
             } catch (error) {
                 console.error('Error fetching authors:', error);
             }
         };
+
         fetchAuthors();
-    }, [get]);
+    }, []);
+
 
     const filteredAuthors = authors.filter(author =>
         author.name.toLowerCase().includes(searchQuery.toLowerCase())
