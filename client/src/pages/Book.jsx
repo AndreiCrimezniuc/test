@@ -49,19 +49,25 @@ const Book = () => {
     const handleDownload = async () => {
         try {
             setDownloading(true);
-            const response = await api.downloadBook(id);
-            const blob = await response.blob();
             
+            // Ensure the response is valid
+            const blob = await api.downloadBook(id);
+    
+            
+            // Create download link
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             
+            // Prepare file name
             const fileName = `${book.title.toLowerCase().replace(/\s+/g, '_')}.pdf`;
             link.setAttribute('download', fileName);
             
+            // Trigger download
             document.body.appendChild(link);
             link.click();
             
+            // Clean up
             link.parentNode.removeChild(link);
             window.URL.revokeObjectURL(url);
         } catch (err) {

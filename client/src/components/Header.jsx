@@ -6,6 +6,7 @@ import { FiSun, FiMoon } from "react-icons/fi";
 import { useFavorites } from '../hooks/useFavorites';
 import '../styles/header.css';
 import PropTypes from 'prop-types';
+import { getImageUrl } from '../utils/image_url';
 
 export default function Header({ isDarkMode, toggleTheme }) {
     const location = useLocation();
@@ -47,7 +48,7 @@ export default function Header({ isDarkMode, toggleTheme }) {
                     <>
                         <Link to="/" className="header-logo">
                             <img 
-                                src={isDarkMode ? '/logo-dark.png' : '/logo-light.png'} 
+                                src={isDarkMode ? '/white-logo.png' :'/black-light.png' } 
                                 alt="LostTales" 
                                 className="logo-image"
                             />

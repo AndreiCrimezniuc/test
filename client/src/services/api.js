@@ -25,7 +25,7 @@ async function fetchApi(endpoint, options = {}) {
 async function downloadFile(endpoint) {
     console.log('Downloading from:', `${API_URL}${endpoint}`);
     const response = await fetch(`${API_URL}${endpoint}`);
-    
+        console.log()
     console.log('Download response status:', response.status);
     if (!response.ok) {
         throw new Error(`Download Error: ${response.status}`);
