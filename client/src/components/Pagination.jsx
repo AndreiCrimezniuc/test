@@ -1,40 +1,40 @@
 import PropTypes from 'prop-types';
-import '../styles/pagination.css';
+import '../styles/Pagination.css';
 
-export default function Pagination({ currentPage, totalPages, onPageChange }) {
+export function Pagination({ currentPage, totalPages, onPageChange }) {
     const pages = [];
-    
-    // Создаем массив номеров страниц
     for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
     }
 
     return (
         <div className="pagination">
-            <button 
-                className="pagination-btn"
+            <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
+                className="pagination-button"
             >
-                &lt;
+                Назад
             </button>
 
-            {pages.map(page => (
-                <button
-                    key={page}
-                    className={`pagination-btn ${currentPage === page ? 'active' : ''}`}
-                    onClick={() => onPageChange(page)}
-                >
-                    {page}
-                </button>
-            ))}
+            <div className="pagination-pages">
+                {pages.map(page => (
+                    <button
+                        key={page}
+                        onClick={() => onPageChange(page)}
+                        className={`pagination-button ${currentPage === page ? 'active' : ''}`}
+                    >
+                        {page}
+                    </button>
+                ))}
+            </div>
 
-            <button 
-                className="pagination-btn"
+            <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
+                className="pagination-button"
             >
-                &gt;
+                Вперед
             </button>
         </div>
     );

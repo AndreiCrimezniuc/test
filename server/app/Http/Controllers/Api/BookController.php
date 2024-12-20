@@ -2,198 +2,115 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\Controller;
-use App\Models\Book;
-use App\Services\BookService;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Models\Book;
+use App\Models\Genre;
+use App\Models\Author;
+use Illuminate\Http\Request;
 
-class BookController extends Controller
+class BookController extends ApiController
 {
-    protected $bookService;
-
-    public function __construct(BookService $bookService)
+    public function index(Request $request)
     {
-        $this->bookService = $bookService;
-    }
+        $query = Book::with(['author', 'genre']);
 
-    /**
-     * Получить список книг
-     */
-    public function index(Request $request): JsonResponse
-    {
-        $filters = $request->only(['search', 'author_id', 'genre_id', 'sort']);
-        $books = $this->bookService->getPaginatedBooks($filters);
-
-        return response()->json([
-            'success' => true,
-            'data' => $books
-        ]);
-    }
-
-    /**
-     * Получить последние добавленные книги
-     */
-    public function latest(): JsonResponse
-    {
-        $books = $this->bookService->getLatestBooks();
-
-        return response()->json([
-            'success' => true,
-            'data' => $books
-        ]);
-    }
-
-    /**
-     * Получить книги по жанру
-     */
-    public function byGenre(int $genreId): JsonResponse
-    {
-        $books = $this->bookService->getBooksByGenre($genreId);
-
-        return response()->json([
-            'success' => true,
-            'data' => $books
-        ]);
-    }
-
-    /**
-     * Получить книги по автору
-     */
-    public function byAuthor(int $authorId): JsonResponse
-    {
-        $books = $this->bookService->getBooksByAuthor($authorId);
-
-        return response()->json([
-            'success' => true,
-            'data' => $books
-        ]);
-    }
-
-    /**
-     * Получить детальную информацию о книге
-     */
-    public function show(int $id): JsonResponse
-    {
-        $book = $this->bookService->getBookById($id);
-
-        if (!$book) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Книга не найдена'
-            ], 404);
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where('title', 'like', "%{$search}%");
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $book
-        ]);
+        if ($request->has('author_id')) {
+            $query->where('author_id', $request->get('author_id'));
+        }
+
+        if ($request->has('genre_id')) {
+            $query->where('genre_id', $request->get('genre_id'));
+        }
+
+        if ($request->has('sort')) {
+            switch ($request->get('sort')) {
+                case 'newest':
+                    $query->latest();
+                    break;
+                case 'oldest':
+                    $query->oldest();
+                    break;
+                case 'title_asc':
+                    $query->orderBy('title');
+                    break;
+                case 'title_desc':
+                    $query->orderByDesc('title');
+                    break;
+                case 'random':
+                    $query->inRandomOrder();
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+
+        if ($request->has('limit')) {
+            $query->limit($request->get('limit'));
+        }
+
+        $books = $query->get();
+        return $this->successResponse($books);
     }
 
-    /**
-     * Создать новую книгу
-     */
-    public function store(Request $request): JsonResponse
+    public function latest()
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'author_id' => 'required|exists:authors,id',
-            'genre_id' => 'required|exists:genres,id',
-            'published_year' => 'required|integer|min:1800|max:' . date('Y'),
-            'cover_image' => 'nullable|image|max:2048',
-            'file_path' => 'nullable|mimes:pdf|max:10240'
-        ]);
-
-        $book = $this->bookService->createBook($validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Книга успешно создана',
-            'data' => $book
-        ], 201);
+        $books = Book::with(['author', 'genre'])
+            ->latest()
+            ->take(10)
+            ->get();
+            
+        return $this->successResponse($books);
     }
 
-    /**
-     * Обновить существующую книгу
-     */
-    public function update(Request $request, Book $book): JsonResponse
+    public function random(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'author_id' => 'required|exists:authors,id',
-            'genre_id' => 'required|exists:genres,id',
-            'published_year' => 'required|integer|min:1800|max:' . date('Y'),
-            'cover_image' => 'nullable|image|max:2048',
-            'file_path' => 'nullable|mimes:pdf|max:10240'
-        ]);
-
-        $book = $this->bookService->updateBook($book, $validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Книга успешно обновлена',
-            'data' => $book
-        ]);
+        $limit = $request->get('limit', 10);
+        $books = Book::with(['author', 'genre'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+            
+        return $this->successResponse($books);
     }
 
-    /**
-     * Удалить книгу
-     */
-    public function destroy(Book $book): JsonResponse
+    public function byGenre(Genre $genre)
     {
-        $this->bookService->deleteBook($book);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Книга успешно удалена'
-        ]);
+        $books = Book::with(['author', 'genre'])
+            ->where('genre_id', $genre->id)
+            ->latest()
+            ->paginate(12);
+            
+        return $this->paginatedResponse($books);
     }
 
-    /**
-     * Скачать файл книги
-     */
-    public function downloadFile(Book $book): StreamedResponse|JsonResponse
+    public function byAuthor(Author $author)
+    {
+        $books = Book::with(['author', 'genre'])
+            ->where('author_id', $author->id)
+            ->latest()
+            ->paginate(12);
+            
+        return $this->paginatedResponse($books);
+    }
+
+    public function show(Book $book)
+    {
+        $book->load(['author', 'genre']);
+        return $this->successResponse($book);
+    }
+
+    public function downloadFile(Book $book)
     {
         if (!$book->file_path || !Storage::disk('public')->exists($book->file_path)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Файл не найден'
-            ], 404);
+            return $this->errorResponse('Файл не найден', 404);
         }
 
         $path = storage_path('app/public/' . $book->file_path);
-        return response()->download($path, $book->title . '.pdf', [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment'
-        ]);
-    }
-
-    /**
-     * Получить информацию о файле книги
-     */
-    public function getFileInfo(Book $book): JsonResponse
-    {
-        if (!$book->file_path || !Storage::disk('public')->exists($book->file_path)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Файл не найден'
-            ], 404);
-        }
-
-        $path = storage_path('app/public/' . $book->file_path);
-        
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'file_url' => $book->file_url,
-                'file_name' => $book->title . '.pdf',
-                'file_size' => filesize($path),
-                'mime_type' => mime_content_type($path)
-            ]
-        ]);
+        return response()->download($path, basename($book->file_path));
     }
 }

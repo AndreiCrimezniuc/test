@@ -212,4 +212,130 @@ body.dark-mode .radio-item label:before {
 
 body.dark-mode .radio-item input[type="radio"]:checked + label:after {
     background: white;
+}
+
+.sidebar {
+    background: var(--wrapper-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: var(--wrapper-bg);
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    right: -40px;
+    top: 0;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sidebar-section {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
+
+.sidebar-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.sidebar-section h3 {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.sidebar-select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--wrapper-bg);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.year-range {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.year-range input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--wrapper-bg);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+/* Темная тема */
+body.dark-mode .sidebar {
+    background: var(--header-bg);
+}
+
+body.dark-mode .sidebar-toggle {
+    background: var(--header-bg);
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .sidebar-section {
+    border-color: var(--border-color-dark);
+}
+
+body.dark-mode .sidebar-section h3 {
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .sidebar-select,
+body.dark-mode .year-range input {
+    background: var(--header-bg);
+    border-color: var(--border-color-dark);
+    color: var(--text-color-dark);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        border-radius: 0;
+        padding-top: 4rem;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .sidebar-toggle {
+        display: block;
+    }
+
+    .sidebar.open .sidebar-toggle {
+        right: 1rem;
+        top: 1rem;
+        border-radius: 8px;
+    }
 } 

@@ -1,4 +1,3 @@
-
 export const fetchBooks = async () => {
     try {
         const response = await fetch('http://localhost:8001/api/v1/books');
@@ -11,4 +10,4 @@ export const fetchBooks = async () => {
         console.error(error);
         return [];
     }
-};
+}

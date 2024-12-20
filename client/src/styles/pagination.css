@@ -2,52 +2,74 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
-    margin: 40px 0;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem 0;
 }
 
-.pagination-btn {
-    padding: 8px 12px;
-    border: none;
+.pagination-pages {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pagination-button {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
     background: var(--wrapper-bg);
-    color: var(--link-color);
-    border-radius: 4px;
+    color: var(--text-color);
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
 }
 
-.pagination-btn:hover:not(:disabled) {
+.pagination-button:hover:not(:disabled) {
     background: var(--link-hover-color);
+    border-color: var(--link-hover-color);
     color: white;
 }
 
-.pagination-btn.active {
+.pagination-button.active {
     background: var(--link-hover-color);
+    border-color: var(--link-hover-color);
     color: white;
 }
 
-.pagination-btn:disabled {
+.pagination-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-body.dark-mode .pagination-btn {
+/* Темная тема */
+body.dark-mode .pagination-button {
     background: var(--header-bg);
-    color: var(--link-color);
+    border-color: var(--border-color-dark);
+    color: var(--text-color-dark);
 }
 
-body.dark-mode .pagination-btn:hover:not(:disabled),
-body.dark-mode .pagination-btn.active {
+body.dark-mode .pagination-button:hover:not(:disabled),
+body.dark-mode .pagination-button.active {
     background: var(--link-hover-color);
+    border-color: var(--link-hover-color);
     color: white;
 }
 
-.pagination-dots {
-    color: var(--link-color);
-    padding: 8px 4px;
-    user-select: none;
+/* Респонсивность */
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .pagination-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
 }
 
-body.dark-mode .pagination-dots {
-    color: var(--link-color);
+@media (max-width: 480px) {
+    .pagination-pages {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 } 

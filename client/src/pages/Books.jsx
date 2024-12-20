@@ -1,135 +1,178 @@
-import {useEffect, useState} from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import '../styles/books.css';
-import { Component as Sidebar } from '../components/Sidebar';
+import { useApi } from '../hooks/useApi';
 import { useFavorites } from '../hooks/useFavorites';
-import { images } from '../utils/images';
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import Pagination from '../components/Pagination';
-import { fetchBooks } from '../services/books.js';
+import { CiSearch } from "react-icons/ci";
+import Sidebar from '../components/Side';
+import '../styles/books.css';
 
-export default function Books() {
+const Books = () => {
+    const [books, setBooks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [selectedAuthors, setSelectedAuthors] = useState([]);
-    const [sortType, setSortType] = useState('newest');
-    const [currentPage, setCurrentPage] = useState(1);
-    const { toggleFavorite, isFavorite } = useFavorites();
-    const [books, setBooks] = useState([]);
-
-    const ITEMS_PER_PAGE = 16;
+    const [sortBy, setSortBy] = useState('title');
+    const [sortOrder, setSortOrder] = useState('asc');
+    const { get } = useApi();
+    const { favorites, toggleFavorite } = useFavorites();
 
     useEffect(() => {
-        // Fetch books data on mount
-        const fetchData = async () => {
-            const data = await fetchBooks();
-            setBooks(data);
+        const fetchBooks = async () => {
+            try {
+                const response = await get('/books');
+                setBooks(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching books:', error);
+                setError('Ошибка при загрузке книг');
+                setLoading(false);
+            }
         };
 
-        fetchData();
-    }, []);
+        fetchBooks();
+    }, [get]);
 
-    // Фильтрация книг
-    const filteredBooks = books.filter(book => {
-        const noGenresSelected = selectedGenres.length === 0;
-        const noAuthorsSelected = selectedAuthors.length === 0;
-
-        if (noGenresSelected && noAuthorsSelected) return true;
-
-        const matchesGenre = noGenresSelected || selectedGenres.some(genre => genre.name === book.genre);
-        const matchesAuthor = noAuthorsSelected || selectedAuthors.some(author => author.name === book.author);
-
-        return matchesGenre && matchesAuthor;
-    });
-
-    // Сортировка книг
-    const sortedBooks = [...filteredBooks].sort((a, b) => {
-        switch (sortType) {
-            case 'newest':
-                return b.published_year - a.published_year;
-            case 'oldest':
-                return a.published_year - b.published_year;
-            case 'az':
-                return a.title.localeCompare(b.title);
-            case 'za':
-                return b.title.localeCompare(a.title);
-            default:
-                return 0;
+    const handleSort = (field) => {
+        if (sortBy === field) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(field);
+            setSortOrder('asc');
         }
-    });
-
-    // Пагинация
-    const totalPages = Math.ceil(sortedBooks.length / ITEMS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const paginatedBooks = sortedBooks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-        window.scrollTo(0, 0);
     };
 
-    const handleFavoriteClick = (e, book) => {
-        e.preventDefault();
-        toggleFavorite(book);
+    const filterBooks = (booksToFilter) => {
+        return booksToFilter.filter(book => {
+            const matchesSearch = book.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                book.author?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                book.genre?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesGenres = selectedGenres.length === 0 || 
+                (book.genre && selectedGenres.includes(book.genre.id));
+
+            const matchesAuthors = selectedAuthors.length === 0 || 
+                (book.author && selectedAuthors.includes(book.author.id));
+
+            return matchesSearch && matchesGenres && matchesAuthors;
+        });
     };
+
+    const sortBooks = (booksToSort) => {
+        return [...booksToSort].sort((a, b) => {
+            let valueA, valueB;
+
+            switch (sortBy) {
+                case 'title':
+                    valueA = a.title?.toLowerCase();
+                    valueB = b.title?.toLowerCase();
+                    break;
+                case 'author':
+                    valueA = a.author?.name?.toLowerCase();
+                    valueB = b.author?.name?.toLowerCase();
+                    break;
+                case 'genre':
+                    valueA = a.genre?.name?.toLowerCase();
+                    valueB = b.genre?.name?.toLowerCase();
+                    break;
+                case 'year':
+                    valueA = a.year;
+                    valueB = b.year;
+                    break;
+                default:
+                    valueA = a.title?.toLowerCase();
+                    valueB = b.title?.toLowerCase();
+            }
+
+            if (valueA === valueB) return 0;
+            if (valueA == null) return 1;
+            if (valueB == null) return -1;
+
+            const comparison = valueA < valueB ? -1 : 1;
+            return sortOrder === 'asc' ? comparison : -comparison;
+        });
+    };
+
+    const filteredBooks = filterBooks(books);
+    const sortedBooks = sortBooks(filteredBooks);
+
+    if (loading) {
+        return <div className="loading">Загрузка...</div>;
+    }
+
+    if (error) {
+        return <div className="error">{error}</div>;
+    }
 
     return (
-        <div className="catalog-page">
-            <div className="catalog-container">
-                <aside className="catalog-sidebar">
-                    <Sidebar 
+        <div className="books-page">
+            <div className="books-container">
+                <aside className="sidebar">
+                    <Sidebar
                         selectedGenres={selectedGenres}
                         setSelectedGenres={setSelectedGenres}
                         selectedAuthors={selectedAuthors}
                         setSelectedAuthors={setSelectedAuthors}
-                        sortType={sortType}
-                        setSortType={setSortType}
+                        sortBy={sortBy}
+                        setSortBy={setSortBy}
+                        sortOrder={sortOrder}
+                        setSortOrder={setSortOrder}
                     />
                 </aside>
-                <div className="catalog-main">
-                    <h1>Вся коллекция книг</h1>
-                    <div className="catalog-grid">
-                        {paginatedBooks.map(book => (
-                            <div className="catalog-book-card" key={book.id}>
-                                <Link to={`/books/${book.id}`}>
-                                    <div className="catalog-book-cover">
-                                        <img src={images[book.cover_image]} alt={book.title} />
-                                        <button 
-                                            className={`catalog-favorite-btn ${isFavorite(book.id) ? 'active' : ''}`}
-                                            onClick={(e) => handleFavoriteClick(e, book)}
-                                        >
-                                            {isFavorite(book.id) ? 
-                                                <MdFavorite className="catalog-favorite-icon" /> : 
-                                                <MdFavoriteBorder className="catalog-favorite-icon" />
-                                            }
-                                        </button>
-                                    </div>
-                                    <div className="catalog-book-info">
-                                        <h3>{book.title}</h3>
-                                        <h4>{book.author}</h4>
-                                    </div>
-                                </Link>
-                            </div>
+
+                <div className="main-content">
+                    <h1>Книги</h1>
+                    
+                    <div className="books-controls">
+                        <div className="search-container">
+                            <input
+                                type="text"
+                                className="search-input"
+                                placeholder="Поиск книг..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <CiSearch className="search-icon" />
+                        </div>
+                    </div>
+
+                    <div className="books-grid">
+                        {sortedBooks.map(book => (
+                            <Link to={`/books/${book.id}`} key={book.id} className="book-card">
+                                <div className="book-cover">
+                                    <img 
+                                        src={book.file_path || '/placeholder-book.png'} 
+                                        alt={book.title} 
+                                    />
+                                    <button
+                                        className={`favorite-btn ${favorites.includes(book.id) ? 'active' : ''}`}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            toggleFavorite(book.id);
+                                        }}
+                                    >
+                                        {favorites.includes(book.id) ? (
+                                            <MdFavorite className="favorite-icon" />
+                                        ) : (
+                                            <MdFavoriteBorder className="favorite-icon" />
+                                        )}
+                                    </button>
+                                </div>
+                                <div className="book-info">
+                                    <h3 className="book-title">{book.title}</h3>
+                                    <p className="book-author">{book.author?.name}</p>
+                                    <p className="book-genre">{book.genre?.name}</p>
+                                    {book.year && <p className="book-year">{book.year}</p>}
+                                </div>
+                            </Link>
                         ))}
                     </div>
-                    <Pagination 
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
                 </div>
             </div>
         </div>
     );
-}
+};
 
-Books.propTypes = {
-    books: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            title: PropTypes.string.isRequired,
-            author: PropTypes.string.isRequired,
-            cover_image: PropTypes.string.isRequired
-        })
-    ).isRequired
-}; 
+export default Books; 

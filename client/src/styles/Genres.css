@@ -1,21 +1,21 @@
-.authors-page {
+.genres-page {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
 }
 
-.authors-container {
+.genres-container {
     width: 100%;
 }
 
-.authors-container h1 {
+.genres-container h1 {
     font-size: 2rem;
     color: var(--text-color);
     margin-bottom: 2rem;
     text-align: center;
 }
 
-.authors-controls {
+.genres-controls {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -41,42 +41,60 @@
     border-color: var(--link-hover-color);
 }
 
-.authors-grid {
+.sort-button {
+    background: var(--wrapper-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.sort-button:hover {
+    border-color: var(--link-hover-color);
+}
+
+.sort-icon {
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+.genres-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
 }
 
-.author-card {
+.genre-card {
     background: var(--wrapper-bg);
     border-radius: 12px;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
     transition: transform 0.2s, box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-.author-card:hover {
+.genre-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.author-name {
+.genre-name {
     font-size: 1.25rem;
     margin: 0 0 0.5rem;
     color: var(--link-hover-color);
 }
 
-.author-count {
+.genre-count {
     font-size: 0.9rem;
     color: var(--link-color);
     margin: 0;
 }
 
-.author-description {
+.genre-description {
     margin-top: 1rem;
     font-size: 0.9rem;
     color: var(--text-color);
@@ -84,7 +102,7 @@
     line-height: 1.5;
 }
 
-.author-books {
+.genre-books {
     margin-top: 1.5rem;
 }
 
@@ -154,7 +172,7 @@
     color: var(--text-color);
 }
 
-.book-genre {
+.book-author {
     font-size: 0.8rem;
     color: var(--link-color);
     margin: 0 0 0.2rem;
@@ -166,28 +184,18 @@
     margin: 0;
 }
 
-.author-photo {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 1rem;
-    border-radius: 50%;
-    overflow: hidden;
-    position: relative;
-}
-
-.author-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.author-info {
-    text-align: center;
-}
-
 /* Темная тема */
-body.dark-mode .author-card {
+body.dark-mode .genre-card {
     background: var(--header-bg);
+}
+
+body.dark-mode .sort-button {
+    background: var(--header-bg);
+    border-color: var(--border-color-dark);
+}
+
+body.dark-mode .sort-icon {
+    color: var(--text-color-dark);
 }
 
 body.dark-mode .search-input {
@@ -196,7 +204,7 @@ body.dark-mode .search-input {
     color: var(--text-color-dark);
 }
 
-body.dark-mode .author-description {
+body.dark-mode .genre-description {
     color: var(--text-color-dark);
 }
 
@@ -208,30 +216,26 @@ body.dark-mode .book-title {
     color: var(--text-color-dark);
 }
 
-body.dark-mode .author-photo {
-    border: 2px solid var(--border-color-dark);
-}
-
 /* Адаптивность */
 @media (max-width: 768px) {
-    .authors-page {
+    .genres-page {
         padding: 1rem;
     }
 
-    .authors-container h1 {
+    .genres-container h1 {
         font-size: 1.5rem;
     }
 
-    .authors-grid {
+    .genres-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 1rem;
     }
 
-    .author-card {
+    .genre-card {
         padding: 1rem;
     }
 
     .books-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
-}
+} 

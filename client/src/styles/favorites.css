@@ -1,124 +1,173 @@
 .favorites-page {
-    padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
-    min-height: calc(100vh - 200px); /* Учитываем высоту header и footer */
+    padding: 2rem;
 }
 
 .favorites-page h1 {
-    margin-bottom: 2rem;
+    font-size: 2rem;
     color: var(--text-color);
-    font-size: 2.5rem;
-    font-weight: 700;
+    margin-bottom: 2rem;
     text-align: center;
-    position: relative;
-    padding-bottom: 1rem;
 }
 
-.favorites-page h1::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 3px;
-    background: var(--primary-color);
-    border-radius: 2px;
-}
-
-.favorites-page .books-grid {
+.favorites-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 2rem;
-    justify-items: center;
+}
+
+.favorites-empty {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.favorites-empty h1 {
+    font-size: 2rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.favorites-empty p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}
+
+.browse-books-link {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: var(--link-hover-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.browse-books-link:hover {
+    background: var(--link-color);
+}
+
+.book-card {
+    text-decoration: none;
+    color: inherit;
+    background: var(--wrapper-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.book-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.book-cover {
+    position: relative;
+    padding-top: 150%;
+    background: #f5f5f5;
+}
+
+.book-cover img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.favorite-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.book-card:hover .favorite-btn,
+.favorite-btn.active {
+    opacity: 1;
+}
+
+.favorite-icon {
+    font-size: 20px;
+    color: var(--red);
+}
+
+.book-info {
     padding: 1rem;
 }
 
-.favorites-page .books-grid p {
-    grid-column: 1 / -1;
-    text-align: center;
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    padding: 3rem;
-    background: var(--background-secondary);
-    border-radius: 10px;
-    width: 100%;
-    max-width: 500px;
-    margin: 2rem auto;
+.book-title {
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    color: var(--text-color);
 }
 
-/* Анимация при наведении на книгу */
-.favorites-page .book-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 10px;
-    overflow: hidden;
-    background: var(--background-secondary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.book-author {
+    font-size: 0.9rem;
+    color: var(--link-color);
+    margin: 0 0 0.3rem;
 }
 
-.favorites-page .book-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+.book-genre {
+    font-size: 0.9rem;
+    color: var(--link-color);
+    margin: 0;
 }
 
-/* Адаптивный дизайн */
+/* Темная тема */
+body.dark-mode .book-card {
+    background: var(--header-bg);
+}
+
+body.dark-mode .book-cover {
+    background: #2a2a2a;
+}
+
+body.dark-mode .book-title {
+    color: var(--text-color-dark);
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
     .favorites-page {
         padding: 1rem;
     }
 
     .favorites-page h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
     }
 
-    .favorites-page .books-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    .favorites-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 1rem;
     }
-}
 
-@media (max-width: 480px) {
-    .favorites-page h1 {
-        font-size: 1.8rem;
-    }
-
-    .favorites-page .books-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .favorites-page .books-grid p {
-        font-size: 1rem;
+    .favorites-empty {
         padding: 2rem 1rem;
     }
-}
 
-/* Анимация появления контента */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+    .favorites-empty h1 {
+        font-size: 1.5rem;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .favorites-empty p {
+        font-size: 1rem;
     }
-}
-
-.favorites-page .books-grid > * {
-    animation: fadeIn 0.5s ease-out forwards;
-}
-
-/* Темная тема */
-body.dark-mode .favorites-page h1 {
-    color: var(--text-color-dark);
-}
-
-body.dark-mode .favorites-page .book-card {
-    background: var(--background-secondary-dark);
-}
-
-body.dark-mode .favorites-page .books-grid p {
-    background: var(--background-secondary-dark);
-    color: var(--text-secondary-dark);
 } 
