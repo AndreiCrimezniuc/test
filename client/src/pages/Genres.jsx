@@ -4,6 +4,7 @@ import { FaHeart, FaRegHeart} from 'react-icons/fa';
 import {api} from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
 import '../styles/Genres.css';
+import {getImageUrl} from "../utils/image_url.js";
 
 const Genres = () => {
     const [genres, setGenres] = useState([]);
@@ -57,7 +58,7 @@ const Genres = () => {
                                             <Link to={`/books/${book.id}`} key={book.id} className="book-card">
                                                 <div className="book-cover">
                                                     <img 
-                                                        src={book.file_path || '/placeholder-book.png'} 
+                                                        src={getImageUrl(book)}
                                                         alt={book.title} 
                                                     />
                                                     <button

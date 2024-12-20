@@ -38,21 +38,21 @@ export function Home() {
 
             <section className="books-section">
                 <h2 className="section-title">Новые поступления</h2>
-                <BooksSlider books={latestBooks?.data || []} />
+                <BooksSlider books={latestBooks || []} />
             </section>
 
             <div className="empty-space"></div>
 
             <section className="books-section">
                 <h2 className="section-title">Популярные книги</h2>
-                <BooksSlider books={randomBooks1?.data || []} />
+                <BooksSlider books={randomBooks1 || []} />
             </section>
 
             <div className="empty-space"></div>
 
             <section className="books-section">
                 <h2 className="section-title">Рекомендуемые книги</h2>
-                <BookAwardsSlider books={randomBooks2?.data || []} />
+                <BookAwardsSlider books={randomBooks2 || []} />
             </section>
 
             <div className="empty-space"></div>

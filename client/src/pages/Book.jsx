@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useApi } from '../hooks/useApi';
+import {api} from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
 import { MdFavorite, MdFavoriteBorder, MdFileDownload } from "react-icons/md";
 import '../styles/book.css';
+import {getImageUrl} from "../utils/image_url.js";
 
 const Book = () => {
     const { id } = useParams();
-    const { get } = useApi();
     const [book, setBook] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,7 +17,7 @@ const Book = () => {
     useEffect(() => {
         const fetchBook = async () => {
             try {
-                const response = await get(`/books/${id}`);
+                const response = await api.getBook(id);
                 setBook(response.data);
                 setLoading(false);
             } catch (error) {
@@ -27,7 +27,7 @@ const Book = () => {
             }
         };
         fetchBook();
-    }, [id, get]);
+    }, [id]);
 
     if (loading) {
         return <div className="loading">Загрузка...</div>;
@@ -49,7 +49,7 @@ const Book = () => {
     const handleDownload = async () => {
         try {
             setDownloading(true);
-            const response = await get(`/books/${id}/download`);
+            const response = await api.downloadBook(id);
             const blob = await response.blob();
             
             const url = window.URL.createObjectURL(blob);
@@ -84,7 +84,7 @@ const Book = () => {
                     <div className="book-cover-container">
                         <div className="book-cover">
                             <img 
-                                src={book.file_path || '/placeholder-book.png'}
+                                src={getImageUrl(book)}
                                 alt={book.title}
                             />
                             <button 

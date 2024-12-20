@@ -9,11 +9,13 @@ import '../styles/books-slider.css';
 import { images } from '../utils/images';
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useFavorites } from '../hooks/useFavorites';
+import {getImageUrl} from "../utils/image_url.js";
 
 export default function BooksSlider({ books }) {
     const { toggleFavorite, isFavorite } = useFavorites();
     const maxBooks = 8; // Максимальное количество книг
     const displayedBooks = books.slice(0, maxBooks); // Берем только первые 8 книг
+    console.log("book slider got: ", books);
 
     const handleFavoriteClick = (e, book) => {
         e.preventDefault();
@@ -48,7 +50,7 @@ export default function BooksSlider({ books }) {
                     <SwiperSlide key={book.id}>
                         <Link to={`/books/${book.id}`} className="book-slide">
                             <div className="book-slide-image">
-                                <img src={images[book.cover_image]} alt={book.title} />
+                                <img src={getImageUrl(book)} alt={book.title} />
                                 <button 
                                     className={`favorite-btn ${isFavorite(book.id) ? 'active' : ''}`}
                                     onClick={(e) => handleFavoriteClick(e, book)}
@@ -61,10 +63,10 @@ export default function BooksSlider({ books }) {
                                 <div className="book-slide-info">
                                     <div className="basic-info">
                                         <h3>{book.title}</h3>
-                                        <p>{book.author}</p>
+                                        <p>{book.author.firstname} {book.author.lastname}</p>
                                     </div>
                                     <div className="hover-info">
-                                        <p className="genre">Жанр: {book.genre}</p>
+                                        <p className="genre">Жанр: {book.genre.name}</p>
                                         <p className="year">Год: {book.published_year}</p>
                                     </div>
                                 </div>
@@ -82,10 +84,10 @@ BooksSlider.propTypes = {
         PropTypes.shape({
             id: PropTypes.number.isRequired,
             title: PropTypes.string.isRequired,
-            author: PropTypes.string.isRequired,
-            genre: PropTypes.string.isRequired,
+            author: PropTypes.object.isRequired,
+            genre: PropTypes.object.isRequired,
             published_year: PropTypes.number.isRequired,
-            cover_image: PropTypes.string.isRequired
+            cover_image: PropTypes.string
         })
     ).isRequired
 }; 

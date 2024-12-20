@@ -6,6 +6,7 @@ import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import Sidebar from '../components/Sidebar.jsx';
 import '../styles/books.css';
+import {getImageUrl} from "../utils/image_url.js";
 
 const Books = () => {
     const [books, setBooks] = useState([]);
@@ -133,7 +134,7 @@ const Books = () => {
                             <Link to={`/books/${book.id}`} key={book.id} className="book-card">
                                 <div className="book-cover">
                                     <img
-                                        src={book.file_path || '/placeholder-book.png'}
+                                        src={getImageUrl(book)}
                                         alt={book.title}
                                     />
                                     <button
