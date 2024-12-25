@@ -30,7 +30,7 @@
                         <a class="nav-link" href="{{ route('admin.genres.index') }}">Жанры</a>
                     </li>
                 </ul>
-                
+
 
                 <ul class="navbar-nav ms-auto">
                     @auth
@@ -38,7 +38,7 @@
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                                 <div class="rounded-circle me-2 overflow-hidden" style="width: 32px; height: 32px;">
-                                    <img src="{{ auth()->user()->avatar_url ?? asset('storage/users/images/default-avatar.png') }}" 
+                                    <img src="{{ auth()->user()->avatar_url ?? asset('storage/public/users/images/default-avatar.png') }}"
                                         class="w-100 h-100 object-fit-cover">
                                 </div>
                                 {{ auth()->user()->firstname }}
@@ -81,4 +81,4 @@
     <script src="{{ asset('js/admin/common.js') }}"></script>
     @yield('scripts')
 </body>
-</html> 
+</html>

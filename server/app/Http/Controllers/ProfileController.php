@@ -22,7 +22,7 @@ class ProfileController extends ApiController
     {
         try {
             $user = $this->user();
-            
+
             $validated = $request->validate([
                 'firstname' => 'required|string|max:255',
                 'lastname' => 'required|string|max:255',
@@ -41,15 +41,19 @@ class ProfileController extends ApiController
                         Storage::makeDirectory($this->avatarPath);
                     }
 
+
                     $manager = new ImageManager(new Driver());
 
                     $image = $manager->read($request->file('avatar'))
                         ->cover(400, 400)
                         ->toJpeg();
 
+
                     $filename = time() . '.jpg';
                     Storage::put($this->avatarPath . '/' . $filename, $image->toString());
-                    
+
+                    \Illuminate\Log\log($this->avatarPath . '/' . $filename);
+
                     $validated['avatar'] = $filename;
                 } catch (\Exception $e) {
                     Log::error('Avatar upload error: ' . $e->getMessage());
@@ -69,4 +73,4 @@ class ProfileController extends ApiController
             return $this->errorResponse($e->getMessage(), 422);
         }
     }
-} 
+}

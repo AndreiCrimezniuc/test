@@ -21,3 +21,6 @@ yarn-error.log
 /.vscode
 /.zed
 /storage/app/public/*
+
+!/public/storage/public/users/images/default-avatar.png
+storage/logs/*

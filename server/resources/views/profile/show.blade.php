@@ -30,14 +30,14 @@
                         <div class="text-center mb-4">
                             <div class="avatar-upload">
                                 <div class="avatar-preview rounded-circle mx-auto" style="width: 200px; height: 200px; overflow: hidden;">
-                                    <img id="imagePreview" src="{{ $user->avatar_url ?? asset('storage/users/images/default-avatar.png') }}" 
+                                    <img id="imagePreview" src="{{ $user->avatar_url ?? asset('storage/public/users/images/default-avatar.png') }}"
                                          class="w-100 h-100 object-fit-cover">
                                 </div>
                                 <label for="avatar" class="btn btn-secondary mt-2 d-none edit-only">Изменить фото</label>
-                                <input type="file" 
+                                <input type="file"
                                        id="avatar"
-                                       name="avatar" 
-                                       class="form-control d-none @error('avatar') is-invalid @enderror" 
+                                       name="avatar"
+                                       class="form-control d-none @error('avatar') is-invalid @enderror"
                                        accept="image/*"
                                        disabled>
                                 @error('avatar')
@@ -48,10 +48,10 @@
 
                         <div class="mb-3">
                             <label for="firstname" class="form-label">Имя</label>
-                            <input type="text" 
-                                   class="form-control @error('firstname') is-invalid @enderror" 
-                                   name="firstname" 
-                                   value="{{ $user->firstname }}" 
+                            <input type="text"
+                                   class="form-control @error('firstname') is-invalid @enderror"
+                                   name="firstname"
+                                   value="{{ $user->firstname }}"
                                    disabled>
                             @error('firstname')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -60,10 +60,10 @@
 
                         <div class="mb-3">
                             <label for="lastname" class="form-label">Фамилия</label>
-                            <input type="text" 
-                                   class="form-control @error('lastname') is-invalid @enderror" 
-                                   name="lastname" 
-                                   value="{{ $user->lastname }}" 
+                            <input type="text"
+                                   class="form-control @error('lastname') is-invalid @enderror"
+                                   name="lastname"
+                                   value="{{ $user->lastname }}"
                                    disabled>
                             @error('lastname')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -72,10 +72,10 @@
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" 
-                                   class="form-control @error('email') is-invalid @enderror" 
-                                   name="email" 
-                                   value="{{ $user->email }}" 
+                            <input type="email"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   name="email"
+                                   value="{{ $user->email }}"
                                    disabled>
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -140,10 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработка отправки формы
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const formData = new FormData(form);
         formData.append('_method', 'PUT'); // Добавляем метод PUT явно
-        
+
         fetch(form.action, {
             method: 'POST',
             body: formData,
@@ -209,4 +209,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-@endsection 
+@endsection
