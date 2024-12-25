@@ -1,62 +1,99 @@
 const API_URL = 'http://localhost:8000/api/v1';
 
-// Вспомогательная функция для работы с API
+// работы с API
 async function fetchApi(endpoint, options = {}) {
     console.log('Fetching from:', `${API_URL}${endpoint}`);
-    const response = await fetch(`${API_URL}${endpoint}`, {
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers,
-        },
-    });
+    try {
+        const response = await fetch(`${API_URL}${endpoint}`, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                ...options.headers,
+            },
+        });
 
-    console.log('Response status:', response.status);
-    if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+        if (!response.ok) {
+            const error = await response.text();
+            console.error('API Error:', error);
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+        if (data && data.data) {
+            return data.data;
+        }
+        return data;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
     }
-
-    const data = await response.json();
-    console.log('Response data:', data);
-    return data;
 }
 
-// Вспомогательная функция для скачивания файлов
+// скачивания файлов
 async function downloadFile(endpoint) {
     console.log('Downloading from:', `${API_URL}${endpoint}`);
-    const response = await fetch(`${API_URL}${endpoint}`);
-        console.log()
-    console.log('Download response status:', response.status);
-    if (!response.ok) {
-        throw new Error(`Download Error: ${response.status}`);
-    }
+    try {
+        const response = await fetch(`${API_URL}${endpoint}`, {
+            headers: {
+                'Accept': 'application/pdf',
+            },
+        });
+            
+        console.log('Download response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`Download Error: ${response.status}`);
+        }
 
-    const blob = await response.blob();
-    return blob;
+        return await response.blob();
+    } catch (error) {
+        console.error('Download error:', error);
+        throw error;
+    }
 }
 
 export const api = {
     // Книги
-    getBooks: (params = {}) => {
-        const queryParams = new URLSearchParams();
-        
-        // Добавляем параметры в URL
-        if (params.sort) queryParams.append('sort', params.sort);
-        if (params.limit) queryParams.append('limit', params.limit);
-        if (params.search) queryParams.append('search', params.search);
-        if (params.genre_id) queryParams.append('genre_id', params.genre_id);
-        if (params.author_id) queryParams.append('author_id', params.author_id);
-        
-        const queryString = queryParams.toString();
-        return fetchApi(`/books${queryString ? `?${queryString}` : ''}`);
+    getBooks: async (params = {}) => {
+        try {
+            const queryParams = new URLSearchParams();
+            
+            if (params.sort) queryParams.append('sort', params.sort);
+            if (params.genre_id) queryParams.append('genre_id', params.genre_id);
+            if (params.author_id) queryParams.append('author_id', params.author_id);
+            if (params.search) queryParams.append('search', params.search);
+            if (params.limit) queryParams.append('limit', params.limit);
+            
+            const queryString = queryParams.toString();
+            const response = await fetchApi(`/books${queryString ? `?${queryString}` : ''}`);
+            console.log('Books response:', response);
+            return response;
+        } catch (error) {
+            console.error('Error fetching books:', error);
+            throw error;
+        }
     },
 
-    getRandomBooks: (limit = 10) => {
-        return fetchApi(`/books/random?limit=${limit}`);
+    getRandomBooks: async (limit = 10) => {
+        try {
+            const response = await fetchApi(`/books/random?limit=${limit}`);
+            return response;
+        } catch (error) {
+            console.error('Error fetching random books:', error);
+            throw error;
+        }
     },
 
-    getLatestBooks: (limit = 10) => {
-        return fetchApi(`/books/latest?limit=${limit}`);
+    getLatestBooks: async (limit = 10) => {
+        try {
+            const response = await fetchApi(`/books/latest?limit=${limit}`);
+            return response;
+        } catch (error) {
+            console.error('Error fetching latest books:', error);
+            throw error;
+        }
     },
 
     getBook: (id) => {
@@ -66,12 +103,18 @@ export const api = {
 
     getBooksByGenre: (genreId) => fetchApi(`/books/genre/${genreId}`),
 
-    getBooksByAuthor: (authorId) => fetchApi(`/books/author/${authorId}`),
+    getBooksByAuthor: (authorId) => {
+        console.log('Getting books for author:', authorId);
+        return fetchApi(`/books/author/${authorId}`);
+    },
 
     // Авторы
     getAuthors: () => fetchApi('/authors'),
 
-    getAuthor: (id) => fetchApi(`/authors/${id}`),
+    getAuthor: (id) => {
+        console.log('Getting author with id:', id);
+        return fetchApi(`/authors/${id}`);
+    },
 
     // Жанры
     getGenres: () => fetchApi('/genres'),
@@ -81,8 +124,16 @@ export const api = {
     // Скачивание файлов
     downloadBook: async (id) => {
         console.log('Downloading book with id:', id);
-        const blob = await downloadFile(`/books/${id}/download`);
-        return blob;
+        try {
+            const blob = await downloadFile(`/books/${id}/download`);
+            if (!blob) {
+                throw new Error('Не удалось получить файл');
+            }
+            return blob;
+        } catch (error) {
+            console.error('Error downloading book:', error);
+            throw error;
+        }
     },
 
     // Вспомогательные функции

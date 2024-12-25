@@ -15,7 +15,7 @@ export function useApi(apiCall, dependencies = []) {
                 const response = await apiCall();
                 
                 if (isMounted) {
-                    setData(response.data);
+                    setData(response);
                 }
             } catch (err) {
                 if (isMounted) {

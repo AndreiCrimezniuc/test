@@ -3,5 +3,5 @@ export  function getImageUrl(book) {
         return 'http://localhost:8000/storage/' + book.cover_image
     }
 
-    return 'http://localhost:8000/storage/books/images/placeholder-book.png'
+    return 'http://localhost:8000/storage/books/covers/placeholder-book.png'
 }

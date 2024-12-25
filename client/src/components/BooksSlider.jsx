@@ -2,30 +2,28 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Mousewheel, Keyboard, Autoplay } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-// import { useState } from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '../styles/books-slider.css';
-import { images } from '../utils/images';
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useFavorites } from '../hooks/useFavorites';
-import {getImageUrl} from "../utils/image_url.js";
+import { getImageUrl } from "../utils/image_url.js";
 
 export default function BooksSlider({ books }) {
     const { toggleFavorite, isFavorite } = useFavorites();
-    const maxBooks = 8; // Максимальное количество книг
-    const displayedBooks = books.slice(0, maxBooks); // Берем только первые 8 книг
-    console.log("book slider got: ", books);
+    const maxBooks = 8;
+    
+    console.log('Books received in BooksSlider:', books);
+    
+    if (!books || !Array.isArray(books)) {
+        console.log('No books data or invalid format');
+        return null;
+    }
 
-    const handleFavoriteClick = (e, book) => {
-        e.preventDefault();
-        toggleFavorite(book);
-        console.log('Toggle favorite:', book.id); // Для отладки
-    };
+    const displayedBooks = books.slice(0, maxBooks);
 
     return (
         <div className="books-slider-container">
-            <h1 className="slider-title">Популярные книги</h1>
             <Swiper
                 speed={2000}
                 slidesPerView={4}
@@ -53,7 +51,10 @@ export default function BooksSlider({ books }) {
                                 <img src={getImageUrl(book)} alt={book.title} />
                                 <button 
                                     className={`favorite-btn ${isFavorite(book.id) ? 'active' : ''}`}
-                                    onClick={(e) => handleFavoriteClick(e, book)}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        toggleFavorite(book);
+                                    }}
                                 >
                                     {isFavorite(book.id) ? 
                                         <MdFavorite className="favorite-icon" /> : 
@@ -63,10 +64,10 @@ export default function BooksSlider({ books }) {
                                 <div className="book-slide-info">
                                     <div className="basic-info">
                                         <h3>{book.title}</h3>
-                                        <p>{book.author.firstname} {book.author.lastname}</p>
+                                        <p>{book.author?.firstname} {book.author?.lastname}</p>
                                     </div>
                                     <div className="hover-info">
-                                        <p className="genre">Жанр: {book.genre.name}</p>
+                                        <p className="genre">Жанр: {book.genre?.name}</p>
                                         <p className="year">Год: {book.published_year}</p>
                                     </div>
                                 </div>

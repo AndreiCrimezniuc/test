@@ -33,6 +33,14 @@
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
+
+            <div class="form-group mb-3">
+                <label>Биография</label>
+                <textarea name="biography" class="form-control @error('biography') is-invalid @enderror" required>{{ old('biography', $author->biography) }}</textarea>
+                @error('biography')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
             
             <div class="form-group mb-3">
                 <label>Фото</label>

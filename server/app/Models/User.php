@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'lastname',
         'email',
         'password',
+        'avatar'
     ];
 
     /**
@@ -58,5 +60,13 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return true; // Все пользователи теперь имеют права админа
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar) {
+            return Storage::url('users/images/' . $this->avatar);
+        }
+        return null;
     }
 }

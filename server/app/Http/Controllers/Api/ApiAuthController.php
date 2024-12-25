@@ -6,9 +6,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Api\ApiController;
 
-class ApiAuthController extends Controller
+class ApiAuthController extends ApiController
 {
+    public function show()
+    {
+        return view('profile.show', ['user' => $this->user()]);
+    }
+
     public function showLoginForm()
     {
         return view('auth.login');
@@ -30,8 +36,8 @@ class ApiAuthController extends Controller
             $request->session()->regenerate();
 
             return response()->json([
-                'user' => auth()->user(),
-                'redirect' => auth()->user()->isAdmin() ? '/admin' : '/',
+                'user' => $this->user(),
+                'redirect' => $this->user()->is_admin ? '/admin' : '/',
                 'token' => $request->session()->token()
             ]);
         }

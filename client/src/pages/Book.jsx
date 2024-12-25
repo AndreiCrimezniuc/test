@@ -6,19 +6,20 @@ import { MdFavorite, MdFavoriteBorder, MdFileDownload } from "react-icons/md";
 import '../styles/book.css';
 import {getImageUrl} from "../utils/image_url.js";
 
-const Book = () => {
+export const Book = () => {
     const { id } = useParams();
     const [book, setBook] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [downloading, setDownloading] = useState(false);
-    const { favorites, toggleFavorite } = useFavorites();
+    const { toggleFavorite, isFavorite } = useFavorites();
 
     useEffect(() => {
         const fetchBook = async () => {
             try {
                 const response = await api.getBook(id);
-                setBook(response.data);
+                console.log('Book data:', response);
+                setBook(response);
                 setLoading(false);
             } catch (error) {
                 console.error('Ошибка при загрузке книги:', error);
@@ -41,18 +42,12 @@ const Book = () => {
         return <div className="error">Книга не найдена</div>;
     }
 
-    const handleFavoriteClick = (e) => {
-        e.preventDefault();
-        toggleFavorite(book.id);
-    };
-
     const handleDownload = async () => {
         try {
             setDownloading(true);
+            setError(null);
             
-            // Ensure the response is valid
             const blob = await api.downloadBook(id);
-    
             
             // Create download link
             const url = window.URL.createObjectURL(blob);
@@ -72,6 +67,7 @@ const Book = () => {
             window.URL.revokeObjectURL(url);
         } catch (err) {
             console.error('Ошибка при скачивании:', err);
+            setError('Ошибка при скачивании файла');
         } finally {
             setDownloading(false);
         }
@@ -94,10 +90,10 @@ const Book = () => {
                                 alt={book.title}
                             />
                             <button 
-                                className={`favorite-btn ${favorites.includes(book.id) ? 'active' : ''}`}
-                                onClick={handleFavoriteClick}
+                                className={`favorite-btn ${isFavorite(book.id) ? 'active' : ''}`}
+                                onClick={() => toggleFavorite(book)}
                             >
-                                {favorites.includes(book.id) ? 
+                                {isFavorite(book.id) ? 
                                     <MdFavorite className="favorite-icon" /> : 
                                     <MdFavoriteBorder className="favorite-icon" />
                                 }
@@ -111,7 +107,7 @@ const Book = () => {
                         <div className="book-meta">
                             {book.author && (
                                 <Link to={`/authors/${book.author.id}`} className="book-author">
-                                    {book.author.name}
+                                    {`${book.author.firstname} ${book.author.lastname}`}
                                 </Link>
                             )}
                             {book.genre && (
@@ -119,8 +115,8 @@ const Book = () => {
                                     {book.genre.name}
                                 </Link>
                             )}
-                            {book.year && (
-                                <span className="book-year">{book.year}</span>
+                            {book.published_year && (
+                                <span className="book-year">{book.published_year}</span>
                             )}
                         </div>
 
@@ -147,5 +143,3 @@ const Book = () => {
         </div>
     );
 };
-
-export default Book; 

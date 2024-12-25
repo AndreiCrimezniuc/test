@@ -19,25 +19,29 @@
     justify-content: space-between;
     gap: 20px;
     align-items: center;
-    padding: 5px 15px;
+    padding: 1rem;
     cursor: pointer;
     color: var(--link-hover-color);
     font-weight: 500;
     font-size: 14px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s;
     background: #7c7f8e1e;
     border-radius: 10px;
     height: 40px;
 }
 
 .section-header:hover {
-    background-color: #7c7f8e56;
+    background-color: var(--hover-bg);
 }
 
 .section-icon {
-    font-size: 14px;
-    transition: transform 0.3s ease;
-    margin-right: 4px;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    transition: transform 0.3s;
+}
+
+.section-header:hover .section-icon {
+    color: var(--text-color);
 }
 
 .checkbox-group {
@@ -338,4 +342,21 @@ body.dark-mode .year-range input {
         top: 1rem;
         border-radius: 8px;
     }
+}
+
+.show-more-btn {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.show-more-btn:hover {
+    background-color: #f5f5f5;
+    color: #333;
 } 

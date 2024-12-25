@@ -4,41 +4,40 @@ import { MdFavorite } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { FiSun, FiMoon } from "react-icons/fi";
 import { useFavorites } from '../hooks/useFavorites';
+import { useSearch } from '../hooks/useSearch';
+import SearchBar from './SearchBar';
 import '../styles/header.css';
 import PropTypes from 'prop-types';
-import { getImageUrl } from '../utils/image_url';
+import { images } from '../utils/images';
 
 export default function Header({ isDarkMode, toggleTheme }) {
     const location = useLocation();
     const path = location.pathname;
     const [isSearchVisible, setIsSearchVisible] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const headerRef = useRef(null);
-    const [searchQuery, setSearchQuery] = useState('');
     const { favorites } = useFavorites();
+    const { setIsSearchOpen, closeSearch } = useSearch();
 
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (headerRef.current && !headerRef.current.contains(event.target)) {
-                setIsSearchVisible(false);
-                setIsMenuOpen(false);
+                closeSearchBar();
             }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [closeSearch]);
 
     const toggleSearch = () => {
         setIsSearchVisible(!isSearchVisible);
-        if (!isSearchVisible) {
-            setIsMenuOpen(true);
-        }
+        setIsSearchOpen(!isSearchVisible);
     };
 
-    const handleSearch = (e) => {
-        setSearchQuery(e.target.value);
-        // Здесь можно добавить логику поиска
+    const closeSearchBar = () => {
+        setIsSearchVisible(false);
+        setIsSearchOpen(false);
+        closeSearch();
     };
 
     return (
@@ -48,29 +47,23 @@ export default function Header({ isDarkMode, toggleTheme }) {
                     <>
                         <Link to="/" className="header-logo">
                             <img 
-                                src={isDarkMode ? '/white-logo.png' :'/black-light.png' } 
+                                src={isDarkMode ? images.whiteLogo : images.blackLogo} 
                                 alt="LostTales" 
                                 className="logo-image"
                             />
                         </Link>
 
-                        <nav className={`header-nav ${isMenuOpen ? 'menu-open' : ''}`}>
-                            <Link 
-                                to="/books" 
-                                className={`nav-link ${path === '/books' || path === '/' ? 'active' : ''}`}
-                            >
+                        <nav className="header-nav">
+                            <Link to="/" className={`nav-link ${path === '/' ? 'active' : ''}`}>
+                                Главная
+                            </Link>
+                            <Link to="/books" className={`nav-link ${path === '/books' || path === '/' ? 'active' : ''}`}>
                                 Книги
                             </Link>
-                            <Link 
-                                to="/authors" 
-                                className={`nav-link ${path.startsWith('/authors') ? 'active' : ''}`}
-                            >
+                            <Link to="/authors" className={`nav-link ${path.startsWith('/authors') ? 'active' : ''}`}>
                                 Авторы
                             </Link>
-                            <Link 
-                                to="/genres" 
-                                className={`nav-link ${path.startsWith('/genres') ? 'active' : ''}`}
-                            >
+                            <Link to="/genres" className={`nav-link ${path.startsWith('/genres') ? 'active' : ''}`}>
                                 Жанры
                             </Link>
                         </nav>
@@ -89,63 +82,9 @@ export default function Header({ isDarkMode, toggleTheme }) {
                         </div>
                     </>
                 ) : (
-                    <div className="search-container">
-                        <div className="burger-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                            <div className={`burger-icon ${isMenuOpen ? 'open' : ''}`}>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                        </div>
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="Поиск книг..."
-                            value={searchQuery}
-                            onChange={handleSearch}
-                            autoFocus
-                        />
-                        <button className="icon-button" onClick={() => setIsSearchVisible(false)}>
-                            ✕
-                        </button>
-                    </div>
+                    <SearchBar onClose={closeSearchBar} />
                 )}
             </div>
-
-            {isMenuOpen && isSearchVisible && (
-                <div className="menu-overlay">
-                    <Link 
-                        to="/" 
-                        className={`nav-link ${path === '/' ? 'active' : ''}`}
-                        onClick={() => setIsMenuOpen(false)}
-                    >
-                        Главная
-                    </Link>
-                    <nav className="vertical-nav">
-                        <Link 
-                            to="/books" 
-                            className={`nav-link ${path === '/books' || path === '/' ? 'active' : ''}`}
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            Книги
-                        </Link>
-                        <Link 
-                            to="/authors" 
-                            className={`nav-link ${path.startsWith('/authors') ? 'active' : ''}`}
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            Авторы
-                        </Link>
-                        <Link 
-                            to="/genres" 
-                            className={`nav-link ${path.startsWith('/genres') ? 'active' : ''}`}
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            Жанры
-                        </Link>
-                    </nav>
-                </div>
-            )}
         </header>
     );
 }

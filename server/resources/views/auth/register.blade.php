@@ -8,8 +8,25 @@
                 <div class="card-header">{{ __('Регистрация') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register.post') }}">
+                    <form method="POST" action="{{ route('register.post') }}" enctype="multipart/form-data">
                         @csrf
+
+                        <div class="mb-3 text-center">
+                            <div class="avatar-upload">
+                                <div class="avatar-preview rounded-circle mx-auto" style="width: 150px; height: 150px; overflow: hidden;">
+                                    <img id="imagePreview" src="{{ asset('images/default-avatar.png') }}" class="w-100 h-100 object-fit-cover">
+                                </div>
+                                <label for="avatar" class="btn btn-secondary mt-2">Выберите фото</label>
+                                <input type="file" 
+                                       id="avatar"
+                                       name="avatar" 
+                                       class="form-control d-none @error('avatar') is-invalid @enderror" 
+                                       accept="image/*">
+                                @error('avatar')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label for="firstname" class="form-label">Имя</label>

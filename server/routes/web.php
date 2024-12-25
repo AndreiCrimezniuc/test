@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\ProfileController;
 
 // Главная страница
 Route::get('/', function () {
@@ -40,4 +41,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Маршруты для авторов и жанров
     Route::resource('authors', AuthorController::class);
     Route::resource('genres', GenreController::class);
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });

@@ -70,23 +70,20 @@
 }
 
 .download-button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-top: 2rem;
-    padding: 1rem 1.5rem;
-    background-color: var(--link-hover-color);
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: var(--link-color);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1.1rem;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: background-color 0.3s;
 }
 
-.download-button:hover:not(:disabled) {
-    background-color: #0052a3;
-    transform: translateY(-2px);
+.download-button:hover {
+    background-color: var(--link-hover-color);
 }
 
 .download-button:disabled {
@@ -95,7 +92,13 @@
 }
 
 .download-icon {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+}
+
+.download-error {
+    color: #dc3545;
+    margin-top: 10px;
+    font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {

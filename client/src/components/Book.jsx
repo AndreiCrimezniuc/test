@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { images } from '../utils/images';
+import { images } from '../utils/image_url';
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useFavorites } from '../hooks/useFavorites';
 import '../styles/book.css';

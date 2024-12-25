@@ -2,20 +2,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart } from 'react-icons/fa';
 import { useFavorites } from '../hooks/useFavorites';
-import { useApi } from '../hooks/useApi';
+import { api } from '../services/api';
+import { getImageUrl } from '../utils/image_url';
 import '../styles/favorites.css';
 
 const Favorites = () => {
     const { favorites, toggleFavorite } = useFavorites();
-    const { get } = useApi();
     const [books, setBooks] = React.useState([]);
 
     React.useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const response = await get('/books');
-                const allBooks = response.data;
-                const favoriteBooks = allBooks.filter(book => favorites.includes(book.id));
+                const response = await api.getBooks();
+                const favoriteBooks = response.filter(book => 
+                    favorites.some(fav => fav.id === book.id)
+                );
                 setBooks(favoriteBooks);
             } catch (error) {
                 console.error('Error fetching favorite books:', error);
@@ -23,7 +24,7 @@ const Favorites = () => {
         };
 
         fetchBooks();
-    }, [get, favorites]);
+    }, [favorites]);
 
     if (books.length === 0) {
         return (
@@ -43,14 +44,14 @@ const Favorites = () => {
                     <Link to={`/books/${book.id}`} key={book.id} className="book-card">
                         <div className="book-cover">
                             <img 
-                                src={book.file_path || '/placeholder-book.png'} 
+                                src={getImageUrl(book)} 
                                 alt={book.title} 
                             />
                             <button
                                 className="favorite-btn active"
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    toggleFavorite(book.id);
+                                    toggleFavorite(book);
                                 }}
                             >
                                 <FaHeart className="favorite-icon" />
